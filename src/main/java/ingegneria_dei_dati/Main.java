@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        JsonHandler handler = new JsonHandler("/home/giordy/IdeaProjects/IdD-Homework3/tables.json", Table.class);
+        JsonHandler handler = new JsonHandler("tables.json", Table.class);
         System.out.println("Hello world!");
         int i=0;
         while (handler.hasNext()) {

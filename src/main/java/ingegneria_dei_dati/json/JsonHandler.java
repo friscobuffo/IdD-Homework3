@@ -22,6 +22,6 @@ public class JsonHandler {
         return false;
     }
     public Object readNext() {
-        return gson.fromJson(this.nextLine,this.c);
+        return gson.fromJson(this.nextLine, this.c);
     }
 }
