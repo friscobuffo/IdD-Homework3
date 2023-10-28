@@ -1,27 +1,27 @@
 package ingegneria_dei_dati.json;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import ingegneria_dei_dati.table.Table;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.*;
 
 public class JsonHandler {
-    public void readLargeJson(String path) throws IOException {
-        try (InputStream inputStream = Files.newInputStream(Path.of(path));
-             JsonReader reader = new JsonReader(new InputStreamReader(inputStream)) )
-        {
-            reader.beginArray();
-            while (reader.hasNext()) {
-                Table person = new Gson().fromJson(reader, Table.class);
-                System.out.println(person.name);
-                //System.out.println(Person);
-            }
-            reader.endArray();
-        }
+    private final Class<?> c;
+    private String nextLine;
+    private final BufferedReader reader;
+    private final Gson gson;
+    public JsonHandler(String path, Class<?> c) throws IOException {
+        this.c = c;
+        this.reader = new BufferedReader(new FileReader(path));
+        this.gson = new Gson();
+    }
+
+    public boolean hasNext() throws IOException {
+        this.nextLine = reader.readLine();
+        if (this.nextLine != null) return true;
+        this.reader.close();
+        return false;
+    }
+    public Object readNext() throws IOException {
+        return gson.fromJson(this.nextLine,this.c);
     }
 }
