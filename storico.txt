@@ -1,0 +1,10 @@
+prima cosa -> leggere file json
+
+il file json è immenso (15 GB)
+
+serve un modo per leggerlo a stream invece che tutto insieme (manco entrerebbe in ram tutto insieme)
+
+libreria gson permette di leggerlo in stream
+crea un oggetto per ogni tabella
+
+in questo modo leggiamo una tabella, la indicizziamo, e passiamo alla prossima
