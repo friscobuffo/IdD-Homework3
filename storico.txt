@@ -2,9 +2,15 @@ prima cosa -> leggere file json
 
 il file json è immenso (15 GB)
 
-serve un modo per leggerlo a stream invece che tutto insieme (manco entrerebbe in ram tutto insieme)
+serve un modo per leggerlo passo passo invece che tutto insieme
+(manco entrerebbe in ram tutto insieme)
 
-libreria gson permette di leggerlo in stream
-crea un oggetto per ogni tabella
+ogni tabella è in una riga del file
 
-in questo modo leggiamo una tabella, la indicizziamo, e passiamo alla prossima
+quindi è easy leggerlo passo passo
+
+leggiamo una riga, e quindi una tabella, alla volta e con la libreria
+gson possiamo convertirla in un oggetto java
+
+in questo modo leggiamo una tabella, la indicizziamo, e passiamo
+alla prossima fino a completare l'indice
