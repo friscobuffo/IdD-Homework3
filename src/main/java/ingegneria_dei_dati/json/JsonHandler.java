@@ -21,7 +21,7 @@ public class JsonHandler {
         this.reader.close();
         return false;
     }
-    public Object readNext() throws IOException {
+    public Object readNext() {
         return gson.fromJson(this.nextLine,this.c);
     }
 }
