@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -24,11 +23,14 @@ public class Main {
         while (jsonHandler.hasNextDocument()) {
             i+=1;
             Triple<String, String, List<String>> triple = jsonHandler.readNextDocument();
+            //System.out.println(triple);
+
             //prima stringa della tripla   = identificatore della tabella
             //seconda stringa della tripla = identificatore della colonna
             //terzo valore della tripla    = lista di stringhe della colonna (lista dei valori
             //                               della colonna)
             indexHandler.add2Index(triple);
+            if (i==10) break;
         }
     }
 }

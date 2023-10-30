@@ -39,7 +39,7 @@ public class IndexHandler implements IndexHandlerInterface{
         writer.addDocument(doc);
 
         writer.commit();
-        writer.close();
+        //writer.close();
     }
 
 
