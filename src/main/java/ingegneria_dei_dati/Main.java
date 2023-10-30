@@ -7,10 +7,7 @@ import ingegneria_dei_dati.utils.Triple;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -26,10 +23,9 @@ public class Main {
         while (jsonHandler.hasNextDocument()) {
             i+=1;
             Triple<String, String, List<String>> triple = jsonHandler.readNextDocument();
-            //prima stringa della tripla   = identificatore della tabella
-            //seconda stringa della tripla = identificatore della colonna
-            //terzo valore della tripla    = lista di stringhe della colonna (lista dei valori
-            //                               della colonna)
+            // prima stringa della tripla   = identificatore della tabella
+            // seconda stringa della tripla = identificatore della colonna
+            // terzo valore della tripla    = lista di stringhe della colonna (lista dei valori della colonna)
 
             //indexHandler.add2Index(triple);
 
