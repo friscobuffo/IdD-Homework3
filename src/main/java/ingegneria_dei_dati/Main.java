@@ -1,24 +1,34 @@
 package ingegneria_dei_dati;
 
+import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.json.JsonHandler;
 import ingegneria_dei_dati.table.Table;
 import ingegneria_dei_dati.utils.Triple;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        Path path = Paths.get("target/index0");
+        Directory directory = FSDirectory.open(path);
+        IndexHandler indexHandler = new IndexHandler(directory);
+
         JsonHandler jsonHandler = new JsonHandler("tables.json", Table.class);
         int i=0;
         while (jsonHandler.hasNextDocument()) {
             i+=1;
-            if (i==5) break;
             Triple<String, String, List<String>> triple = jsonHandler.readNextDocument();
             //prima stringa della tripla   = identificatore della tabella
             //seconda stringa della tripla = identificatore della colonna
             //terzo valore della tripla    = lista di stringhe della colonna (lista dei valori
             //                               della colonna)
+            indexHandler.add2Index(triple);
         }
     }
 }
