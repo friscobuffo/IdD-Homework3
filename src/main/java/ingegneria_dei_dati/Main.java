@@ -5,7 +5,6 @@ import ingegneria_dei_dati.table.Table;
 import ingegneria_dei_dati.utils.Triple;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
