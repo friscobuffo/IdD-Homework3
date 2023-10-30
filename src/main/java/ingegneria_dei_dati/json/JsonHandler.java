@@ -1,7 +1,6 @@
 package ingegneria_dei_dati.json;
 
 import com.google.gson.Gson;
-import ingegneria_dei_dati.table.Table;
 import ingegneria_dei_dati.utils.Triple;
 
 import java.io.*;
@@ -22,9 +21,9 @@ public class JsonHandler implements JsonHandlerInterface{
     }
 
     public boolean hasNextDocument() {
-        if (documents != null) {
-            return true;
-        }
+        if (this.documents != null)
+            if (!this.documents.isEmpty())
+                return true;
         try {
             String nextLine = reader.readLine();
             if (nextLine != null) {
@@ -43,10 +42,6 @@ public class JsonHandler implements JsonHandlerInterface{
     }
     @Override
     public Triple<String,String, List<String>> readNextDocument() {
-        Triple<String,String, List<String>> document = this.documents.removeFirst();
-        if (this.documents.isEmpty()) {
-            this.documents = null;
-        }
-        return document;
+        return this.documents.removeFirst();
     }
 }

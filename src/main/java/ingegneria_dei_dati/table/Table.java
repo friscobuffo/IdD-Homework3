@@ -12,6 +12,8 @@ public class Table extends DocumentsRepresentable {
     public String id;
     public Cell[] cells;
 
+    public Coordinates maxDimensions;
+
     @Override
     public List<Triple<String, String, List<String>>> tableDocumentsRepresentation() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
