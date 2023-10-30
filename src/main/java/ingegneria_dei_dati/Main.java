@@ -27,13 +27,13 @@ public class Main {
             // seconda stringa della tripla = identificatore della colonna
             // terzo valore della tripla    = lista di stringhe della colonna (lista dei valori della colonna)
 
-            //indexHandler.add2Index(triple);
+            indexHandler.add2Index(triple);
 
             //System.out.println(triple);
-            System.out.print("\r"+i);
-            if (i==100000) break;
+            System.out.print("\rindexed columns: "+i);
+            if (i==10000) break;
         }
-        System.out.println("\rFinished indexing tables");
+        System.out.println("\rFinished indexing tables    ");
         Table.tablesStatistics.printStats();
     }
 }
