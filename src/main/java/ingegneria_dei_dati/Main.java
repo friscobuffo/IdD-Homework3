@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Path path = Paths.get("target/index0");
+        Path path = Paths.get("index/index0");
         Directory directory = FSDirectory.open(path);
         IndexHandler indexHandler = new IndexHandler(directory);
 
