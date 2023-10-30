@@ -12,7 +12,7 @@ public class TableExpander {
     private IndexHandlerInterface indexHandler;
 
     public TableExpander(String indexPath) {
-        this.indexHandler = new IndexHandler(indexPath);
+        //this.indexHandler = new IndexHandler(indexPath);
     }
 
     /*
@@ -29,7 +29,7 @@ public class TableExpander {
         }
         BooleanQuery booleanQuery = booleanQueryBuilder.build();
 
-        this.indexHandler.search(booleanQuery);
+        //this.indexHandler.search(booleanQuery);
     }
 
 

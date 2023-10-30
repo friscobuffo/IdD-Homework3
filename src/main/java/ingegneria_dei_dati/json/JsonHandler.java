@@ -28,7 +28,7 @@ public class JsonHandler implements JsonHandlerInterface{
             String nextLine = reader.readLine();
             if (nextLine != null) {
                 DocumentsRepresentable documents = (DocumentsRepresentable) gson.fromJson(nextLine, this.c);
-                this.documents = documents.tableDocumentsRepresentation();
+                this.documents = documents.getTableDocumentsRepresentation();
                 return true;
             }
             this.reader.close();

@@ -1,0 +1,65 @@
+package ingegneria_dei_dati.table;
+
+import ingegneria_dei_dati.utils.Triple;
+
+import java.util.*;
+
+public class TablesStatistics {
+    public int totalTables = 0;
+    public int totalRows = 0;
+    public int totalColumns = 0;
+    public int emptyCells = 0;
+    public Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
+    public Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
+    public Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
+
+    public void processTableStats(Table table, List<Triple<String, String, List<String>>> tableRepresentation) {
+        // update of basic counters
+        this.totalTables += 1;
+        this.totalColumns += table.maxDimensions.column;
+        this.totalRows += table.maxDimensions.row;
+        // update of emptyCells
+        for (Cell cell: table.cells) {
+            if (cell.cleanedText==null) this.emptyCells+=1;
+            else if (cell.cleanedText.isBlank()) this.emptyCells += 1;
+        }
+        // update rowsNumber2tablesQuantity
+        if (this.rowsNumber2tablesQuantity.containsKey(table.maxDimensions.row)) {
+            int newValue = this.rowsNumber2tablesQuantity.get(table.maxDimensions.row)+1;
+            this.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
+        }
+        else rowsNumber2tablesQuantity.put(table.maxDimensions.row, 1);
+        // update columnsNumber2tablesQuantity
+        if (this.columnsNumber2tablesQuantity.containsKey(table.maxDimensions.column)) {
+            int newValue = this.columnsNumber2tablesQuantity.get(table.maxDimensions.column)+1;
+            this.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
+        }
+        else columnsNumber2tablesQuantity.put(table.maxDimensions.column, 1);
+        // update distinctValuesNumber2columnsQuantity
+        for (Triple<String, String, List<String>> column: tableRepresentation) {
+            int distinctValues = (int) column.third.stream().distinct().count();
+            if (this.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
+                int newValue = this.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
+                this.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
+            }
+            else this.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
+        }
+    }
+
+    public void printStats() {
+        System.out.print("totalTables -> ");
+        System.out.println(this.totalTables);
+        System.out.print("totalRows -> ");
+        System.out.println(this.totalRows);
+        System.out.print("totalColumns -> ");
+        System.out.println(this.totalColumns);
+        System.out.print("emptyCells -> ");
+        System.out.println(this.emptyCells);
+        System.out.print("rowsNumber2tablesQuantity -> ");
+        System.out.println(this.rowsNumber2tablesQuantity);
+        System.out.print("columnsNumber2tablesQuantity -> ");
+        System.out.println(this.columnsNumber2tablesQuantity);
+        System.out.print("distinctValuesNumber2columnsQuantity -> ");
+        System.out.println(this.distinctValuesNumber2columnsQuantity);
+    }
+}
