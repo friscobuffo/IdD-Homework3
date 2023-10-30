@@ -1,10 +1,12 @@
 package ingegneria_dei_dati.json;
 
 import com.google.gson.Gson;
+import ingegneria_dei_dati.utils.Triple;
 
 import java.io.*;
+import java.util.List;
 
-public class JsonHandler {
+public class JsonHandler implements JsonHandlerInterface{
     private final Class<?> c; // gli elementi json vengono convertiti in istanze di questa classe
     private String nextLine;
     private final BufferedReader reader; // il file json contiene un elemento (ovvero una tabella)
@@ -18,13 +20,22 @@ public class JsonHandler {
         this.gson = new Gson();
     }
 
-    public boolean hasNext() throws IOException {
-        this.nextLine = reader.readLine();
-        if (this.nextLine != null) return true;
-        this.reader.close();
-        return false;
+    public boolean hasNextDocument() {
+        try {
+            this.nextLine = reader.readLine();
+            if (this.nextLine != null) return true;
+            this.reader.close();
+            return false;
+        }
+        catch (IOException e) {
+            System.out.println("Catturata eccezione IO");
+            return false;
+        }
+
     }
-    public Object readNext() {
-        return gson.fromJson(this.nextLine, this.c);
+    @Override
+    public Triple<String,String, List<String>> readNextDocument() {
+        Object prova = gson.fromJson(this.nextLine, this.c);
+        return null;
     }
 }

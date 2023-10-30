@@ -16,16 +16,17 @@ in questo modo leggiamo una tabella, la indicizziamo, e passiamo
 alla prossima fino a completare l'indice
 
 adesso serve da fare:
- - "TablesHandler": classe che converte le tabelle in set di documenti,
+ - "TablesHandler": classe che converte le tabelle in set di documenti,                 -giordano
                    nello specifico le colonne della tabella in documenti
                    deve anche creare le statistiche (ad esempio numero medio
                    di colonne, di righe, numero di tabelle totali, etc)
  - capire che analyzer usare
- - "IndexHandler": classe che gestisce l'indice, con un metodo che prende
+ - "IndexHandler": classe che gestisce l'indice, con un metodo che prende               -riccardo
                    i documenti e li aggiunge all'indice.
-                   un metodo che gli dai un "documento", ovvero una colonna
-                   di una tabella, e ti trova le tabelle che possono espandere
-                   la tabella, con algoritmo merge list
+ - "QueryHandler": gli dai un "documento", ovvero una colonna di una tabella,           -simone
+                   ti trova le tabelle che possono espandere la tabella, con
+                   algoritmo merge list
+
  - testing: creare un piccolo dataset e testare su quello
                    testare su tables.json
  - presentazione
