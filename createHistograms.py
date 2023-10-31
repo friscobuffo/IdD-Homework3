@@ -37,20 +37,14 @@ path = "histograms"
 if not os.path.exists(path):
 	   os.makedirs(path)
 	   
-temp = []
-for key in columnsNumber2tablesQuantity:
-	for _ in range(columnsNumber2tablesQuantity.get(key)):
-		temp.append(key)	
+temp = [key for key in columnsNumber2tablesQuantity for _ in range(columnsNumber2tablesQuantity[key])]
 array = np.array(temp)
 fig = plt.figure
 plt.hist(array, 20, (1,15))
 plt.savefig("histograms/columnsNumber2tablesQuantity.jpg")
 plt.clf()
 
-temp = []
-for key in rowsNumber2tablesQuantity:
-	for _ in range(rowsNumber2tablesQuantity.get(key)):
-		temp.append(key)	
+temp = [key for key in rowsNumber2tablesQuantity for _ in range(rowsNumber2tablesQuantity[key])]
 array = np.array(temp)
 plt.hist
 plt.hist(array, 80, (1,80))
