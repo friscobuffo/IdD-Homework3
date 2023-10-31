@@ -73,13 +73,13 @@ public class TablesStatistics {
         saveMapStats(this.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity");
     }
 
-    private void saveMapStats(Map<Integer, Integer> map, String mapName) {
+    private <A,B> void saveMapStats(Map<A, B> map, String mapName) {
         String path = "stats/";
         try {
             FileWriter myWriter = new FileWriter(path+mapName+".csv");
-            for (int key : map.keySet()) {
-                int value = map.get(key);
-                String line = key + "," + value + "\n";
+            for (A key : map.keySet()) {
+                B value = map.get(key);
+                String line = key.toString() + "," + value.toString() + "\n";
                 myWriter.write(line);
             }
             myWriter.close();
