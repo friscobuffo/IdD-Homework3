@@ -26,9 +26,8 @@ public class Table implements DocumentsRepresentable {
                 headerIndex2Name.put(cell.Coordinates.column, cell.cleanedText);
                 continue;
             }
-            if (columnIndex2elements.containsKey(cell.Coordinates.column)) {
+            if (columnIndex2elements.containsKey(cell.Coordinates.column))
                 columnIndex2elements.get(cell.Coordinates.column).add(cell.cleanedText);
-            }
             else {
                 List<String> elements = new ArrayList<>();
                 elements.add(cell.cleanedText);
