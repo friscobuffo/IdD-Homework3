@@ -1,9 +1,11 @@
 package ingegneria_dei_dati.index;
 
 import ingegneria_dei_dati.utils.Triple;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.TextField;
@@ -23,11 +25,10 @@ public class IndexHandler implements IndexHandlerInterface{
         this.writer = new IndexWriter(dir, new IndexWriterConfig());
     }
 
-    @Override
-    public void add2Index(Triple triple) throws IOException {
-        String tableId = (String) triple.first;
-        String columnId = (String) triple.second;
-        List<String> text = (List<String>) triple.third;
+    public void add2Index(Triple<String, String, List<String>> triple) throws IOException {
+        String tableId = triple.first;
+        String columnId = triple.second;
+        List<String> text = triple.third;
 
         Document doc = new Document();
         doc.add(new TextField("table_id", tableId, Field.Store.NO));
@@ -42,4 +43,18 @@ public class IndexHandler implements IndexHandlerInterface{
     }
 
 
+    @Override
+    public void createIndex(String datasetPath) {
+
+    }
+
+    @Override
+    public void search(Query query) {
+
+    }
+
+    @Override
+    public Analyzer getAnalyzer() {
+        return null;
+    }
 }

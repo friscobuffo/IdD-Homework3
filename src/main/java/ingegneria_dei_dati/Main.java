@@ -2,6 +2,7 @@ package ingegneria_dei_dati;
 
 import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.json.JsonHandler;
+import ingegneria_dei_dati.json.JsonHandlerInterface;
 import ingegneria_dei_dati.table.Table;
 import ingegneria_dei_dati.utils.Triple;
 import org.apache.lucene.store.Directory;
@@ -18,7 +19,7 @@ public class Main {
         Directory directory = FSDirectory.open(path);
         IndexHandler indexHandler = new IndexHandler(directory);
 
-        JsonHandler jsonHandler = new JsonHandler("tables.json", Table.class);
+        JsonHandlerInterface jsonHandler = new JsonHandler("tables.json", Table.class);
         int i=0;
         while (jsonHandler.hasNextDocument()) {
             i+=1;
