@@ -3,6 +3,8 @@ package ingegneria_dei_dati.table;
 import ingegneria_dei_dati.utils.Triple;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
@@ -75,6 +77,7 @@ public class TablesStatistics {
     private <A,B> void saveMapStats(Map<A, B> map, String mapName) {
         String path = "stats/";
         try {
+            Files.createDirectories(Paths.get(path));
             FileWriter myWriter = new FileWriter(path+mapName+".csv");
             for (A key : map.keySet()) {
                 B value = map.get(key);
@@ -89,6 +92,7 @@ public class TablesStatistics {
     private void saveBasicStats() {
         String path = "stats/";
         try {
+            Files.createDirectories(Paths.get(path));
             FileWriter myWriter = new FileWriter(path+"basicStats.csv");
             String line = "totalTables," + this.totalTables + "\n";
             line += "totalRows," + this.totalRows + "\n";
