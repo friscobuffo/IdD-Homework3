@@ -101,6 +101,7 @@ public class TablesStatistics {
     }
 
     public void runPythonScriptHistograms() {
+        saveStats();
         String path = System.getProperty("user.dir") + "/createHistograms.py";
         try {
             Runtime rt = Runtime.getRuntime();
