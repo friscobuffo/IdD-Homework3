@@ -27,7 +27,7 @@ public class Main {
             // seconda stringa della tripla = identificatore della colonna
             // terzo valore della tripla    = lista di stringhe della colonna (lista dei valori della colonna)
 
-            indexHandler.add2Index(triple);
+            //indexHandler.add2Index(triple);
 
             //System.out.println(triple);
             System.out.print("\rindexed columns: "+i);
@@ -35,5 +35,6 @@ public class Main {
         }
         System.out.println("\rFinished indexing tables    ");
         Table.tablesStatistics.printStats();
+        Table.tablesStatistics.saveStats();
     }
 }

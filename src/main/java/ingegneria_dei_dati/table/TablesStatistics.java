@@ -2,7 +2,10 @@ package ingegneria_dei_dati.table;
 
 import ingegneria_dei_dati.utils.Triple;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class TablesStatistics {
     public int totalTables = 0;
@@ -61,5 +64,40 @@ public class TablesStatistics {
         System.out.println(this.columnsNumber2tablesQuantity);
         System.out.print("distinctValuesNumber2columnsQuantity -> ");
         System.out.println(this.distinctValuesNumber2columnsQuantity);
+    }
+
+    public void saveStats() {
+        saveBasicStats();
+        saveMapStats(this.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity");
+        saveMapStats(this.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity");
+        saveMapStats(this.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity");
+    }
+
+    private void saveMapStats(Map<Integer, Integer> map, String mapName) {
+        String path = "stats/";
+        try {
+            FileWriter myWriter = new FileWriter(path+mapName+".csv");
+            for (int key : map.keySet()) {
+                int value = map.get(key);
+                String line = key + "," + value + "\n";
+                myWriter.write(line);
+            }
+            myWriter.close();
+        }
+        catch (IOException ignored) { }
+    }
+
+    private void saveBasicStats() {
+        String path = "stats/";
+        try {
+            FileWriter myWriter = new FileWriter(path+"basicStats.csv");
+            String line = "totalTables," + this.totalTables + "\n";
+            line += "totalRows," + this.totalRows + "\n";
+            line += "totalColumns," + this.totalColumns + "\n";
+            line += "emptyCells," + this.emptyCells + "\n";
+            myWriter.write(line);
+            myWriter.close();
+        }
+        catch (IOException ignored) { }
     }
 }
