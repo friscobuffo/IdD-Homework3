@@ -7,6 +7,8 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 
+import java.util.List;
+
 public class TableExpander {
     private final String FIELD = "text";
     private IndexHandlerInterface indexHandler;
@@ -15,12 +17,7 @@ public class TableExpander {
         this.indexHandler = new IndexHandler(indexPath);
     }
 
-    /*
-     * columnRepresentation is expected to be a sequence of terms occurring in one column
-     * divided by a blank space
-     */
-    private void searchForColumnExpansion(String columnRepresentation){
-        String[] columnTerms = columnRepresentation.split(" ");
+    private void searchForColumnExpansion(List<String> columnTerms){
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
 
         for(String term : columnTerms){
