@@ -2,8 +2,7 @@ package ingegneria_dei_dati.table;
 
 import ingegneria_dei_dati.utils.Triple;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -99,5 +98,29 @@ public class TablesStatistics {
             myWriter.close();
         }
         catch (IOException ignored) { }
+    }
+
+    public void runPythonScriptHistograms() {
+        String path = System.getProperty("user.dir") + "/createHistograms.py";
+        try {
+            Runtime rt = Runtime.getRuntime();
+            String command = "pip install matplotlib";
+            Process pr = rt.exec(command);
+            pr.waitFor();
+
+            command = "python " + path;
+            pr = rt.exec(command);
+            pr.waitFor();
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
+
+            String line;
+            while((line=input.readLine()) != null)
+                System.out.println(line);
+            while((line=error.readLine()) != null)
+                System.out.println(line);
+        }
+        catch (Exception ignored) { }
     }
 }

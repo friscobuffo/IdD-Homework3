@@ -36,5 +36,6 @@ public class Main {
         System.out.println("\rFinished indexing tables    ");
         Table.tablesStatistics.printStats();
         Table.tablesStatistics.saveStats();
+        Table.tablesStatistics.runPythonScriptHistograms();
     }
 }
