@@ -23,14 +23,18 @@ public class Main {
         while (jsonHandler.hasNextDocument()) {
             i+=1;
             Triple<String, String, List<String>> triple = jsonHandler.readNextDocument();
-            //System.out.println(triple);
+            // prima stringa della tripla   = identificatore della tabella
+            // seconda stringa della tripla = identificatore della colonna
+            // terzo valore della tripla    = lista di stringhe della colonna (lista dei valori della colonna)
 
-            //prima stringa della tripla   = identificatore della tabella
-            //seconda stringa della tripla = identificatore della colonna
-            //terzo valore della tripla    = lista di stringhe della colonna (lista dei valori
-            //                               della colonna)
-            indexHandler.add2Index(triple);
-            if (i==10) break;
+            //indexHandler.add2Index(triple);
+
+            //System.out.println(triple);
+            System.out.print("\rindexed columns: "+i);
+            if (i==10000) break;
         }
+        System.out.println("\rFinished indexing tables    ");
+        Table.tablesStatistics.printStats();
+        Table.tablesStatistics.runPythonScriptHistograms();
     }
 }

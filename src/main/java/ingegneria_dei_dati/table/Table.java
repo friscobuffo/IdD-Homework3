@@ -8,12 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Table extends DocumentsRepresentable {
+public class Table implements DocumentsRepresentable {
     public String id;
     public Cell[] cells;
+    public Coordinates maxDimensions;
+    public static TablesStatistics tablesStatistics;
 
+    public Table() {
+        if (Table.tablesStatistics == null) Table.tablesStatistics = new TablesStatistics();
+    }
     @Override
-    public List<Triple<String, String, List<String>>> tableDocumentsRepresentation() {
+    public List<Triple<String, String, List<String>>> getDocumentsRepresentation() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
         Map<Integer, List<String>> columnIndex2elements = new HashMap<>();
         for (Cell cell: cells) {
@@ -38,6 +43,7 @@ public class Table extends DocumentsRepresentable {
             column.third = columnIndex2elements.get(i);
             tableDocument.add(column);
         }
+        Table.tablesStatistics.processTableStats(this, tableDocument);
         return tableDocument;
     }
 }
