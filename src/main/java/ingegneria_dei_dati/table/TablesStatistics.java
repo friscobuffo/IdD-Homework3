@@ -1,6 +1,6 @@
 package ingegneria_dei_dati.table;
 
-import ingegneria_dei_dati.utils.Triple;
+import ingegneria_dei_dati.documents.ColumnRepresentation;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -17,7 +17,7 @@ public class TablesStatistics {
     public Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
     public Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
 
-    public void processTableStats(Table table, List<Triple<String, String, List<String>>> tableRepresentation) {
+    public void processTableStats(Table table, List<ColumnRepresentation> tableRepresentation) {
         // update of basic counters
         this.totalTables += 1;
         this.totalColumns += table.maxDimensions.column;
@@ -40,8 +40,8 @@ public class TablesStatistics {
         }
         else columnsNumber2tablesQuantity.put(table.maxDimensions.column, 1);
         // update distinctValuesNumber2columnsQuantity
-        for (Triple<String, String, List<String>> column: tableRepresentation) {
-            int distinctValues = (int) column.third.stream().distinct().count();
+        for (ColumnRepresentation column: tableRepresentation) {
+            int distinctValues = (int) column.getFields().stream().distinct().count();
             if (this.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
                 int newValue = this.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
                 this.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);

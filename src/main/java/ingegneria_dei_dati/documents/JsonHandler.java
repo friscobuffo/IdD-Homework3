@@ -1,33 +1,31 @@
 package ingegneria_dei_dati.documents;
 
 import com.google.gson.Gson;
-import ingegneria_dei_dati.utils.Triple;
+import ingegneria_dei_dati.table.Table;
 
 import java.io.*;
 import java.util.List;
 
-public class JsonHandler implements DocumentsHandler {
-    private List<Triple<String,String, List<String>>> documents;
+public class JsonHandler implements TablesHandler {
+    private List<ColumnRepresentation> columns;
     private final BufferedReader reader; // il file json contiene un elemento (ovvero una tabella)
     // per ogni riga, quindi possiamo scorrere il file con il BufferedReader e parsare una riga alla volta
     private final Gson gson; // serve a convertire l'elemento del file json (passandolo in input
     // come stringa) in un oggetto java
-    private final Class<?> c;
 
-    public JsonHandler(String path, Class<?> c) throws IOException {
+    public JsonHandler(String path) throws IOException {
         this.reader = new BufferedReader(new FileReader(path));
         this.gson = new Gson();
-        this.c = c;
     }
-    public boolean hasNextDocument() {
-        if (this.documents != null)
-            if (!this.documents.isEmpty())
+    public boolean hasNextColumn() {
+        if (this.columns != null)
+            if (!this.columns.isEmpty())
                 return true;
         try {
             String nextLine = reader.readLine();
             if (nextLine != null) {
-                DocumentsRepresentable documents = (DocumentsRepresentable) gson.fromJson(nextLine, this.c);
-                this.documents = documents.getDocumentsRepresentation();
+                Table table = gson.fromJson(nextLine, Table.class);
+                this.columns = table.getColumns();
                 return true;
             }
             this.reader.close();
@@ -39,7 +37,7 @@ public class JsonHandler implements DocumentsHandler {
         }
     }
     @Override
-    public Triple<String,String, List<String>> readNextDocument() {
-        return this.documents.removeFirst();
+    public ColumnRepresentation readNextColumn() {
+        return this.columns.removeFirst();
     }
 }

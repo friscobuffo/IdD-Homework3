@@ -1,7 +1,7 @@
 package ingegneria_dei_dati.index;
 
-import ingegneria_dei_dati.documents.DocumentsHandler;
-import ingegneria_dei_dati.utils.Triple;
+import ingegneria_dei_dati.documents.TablesHandler;
+import ingegneria_dei_dati.documents.ColumnRepresentation;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
@@ -31,10 +31,10 @@ public class IndexHandler implements IndexHandlerInterface{
         Path path_ = Paths.get(path);
         this.directory = FSDirectory.open(path_);
     }
-    public void add2Index(Triple<String, String, List<String>> triple) throws IOException {
-        String tableId = triple.first;
-        String columnId = triple.second;
-        List<String> text = triple.third;
+    public void add2Index(ColumnRepresentation column) throws IOException {
+        String tableId = column.getTableName();
+        String columnId = column.getColumnName();
+        List<String> text = column.getFields();
 
         Document doc = new Document();
         doc.add(new TextField("table_id", tableId, Field.Store.NO));
@@ -45,25 +45,22 @@ public class IndexHandler implements IndexHandlerInterface{
         this.writer.addDocument(doc);
     }
     @Override
-    public void createIndex(String datasetPath, DocumentsHandler documentsHandler) throws IOException {
+    public void createIndex(String datasetPath, TablesHandler tablesHandler) throws IOException {
         this.analyzer = new StandardAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
         this.writer = new IndexWriter(directory, config);
         this.writer.deleteAll();
         int i=0;
-        while (documentsHandler.hasNextDocument()) {
+        while (tablesHandler.hasNextColumn()) {
             i += 1;
-            Triple<String, String, List<String>> triple = documentsHandler.readNextDocument();
-            // prima stringa della tripla   = identificatore della tabella
-            // seconda stringa della tripla = identificatore della colonna
-            // terzo valore della tripla    = lista di stringhe della colonna (lista dei valori della colonna)
-            this.add2Index(triple);
+            ColumnRepresentation column = tablesHandler.readNextColumn();
+            this.add2Index(column);
             if(i%1000 == 0) this.writer.commit();
-            System.out.print("\rindexed documents: "+i);
+            System.out.print("\rindexed columns: "+i);
         }
         this.writer.commit();
         this.writer.close();
-        System.out.println("\rfinished indexing documents      ");
+        System.out.println("\rfinished indexing columns      ");
     }
     @Override
     public void search(Query query) throws IOException {

@@ -2,7 +2,7 @@ package ingegneria_dei_dati;
 
 import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.documents.JsonHandler;
-import ingegneria_dei_dati.documents.DocumentsHandler;
+import ingegneria_dei_dati.documents.TablesHandler;
 import ingegneria_dei_dati.table.Table;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class Main {
         String datasetPath = "tables.json";
         String indexPath = "index";
 
-        DocumentsHandler jsonHandler = new JsonHandler(datasetPath, Table.class);
+        TablesHandler jsonHandler = new JsonHandler(datasetPath);
         /* Al momento glielo passo come parametro di Input poi faremo le dovute scelte a riguardo,
          *   avevo pensato di creare l'istanza direttamente nel mentodo ma così, sempre e comunque diamo già per scontato
          *   che nella creazione dell'indice utilizzaimo sempre un file Json */

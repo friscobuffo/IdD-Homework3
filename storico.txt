@@ -30,3 +30,7 @@ adesso serve da fare:
  - testing: creare un piccolo dataset e testare su quello
                    testare su tables.json
  - presentazione
+
+
+note: ci sono tabelle senza gli headers
+    -> campi header di queste tabelle impostati "header"

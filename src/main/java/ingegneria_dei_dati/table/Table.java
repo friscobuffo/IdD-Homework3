@@ -1,14 +1,13 @@
 package ingegneria_dei_dati.table;
 
-import ingegneria_dei_dati.documents.DocumentsRepresentable;
-import ingegneria_dei_dati.utils.Triple;
+import ingegneria_dei_dati.documents.ColumnRepresentation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Table implements DocumentsRepresentable {
+public class Table {
     public String id;
     public Cell[] cells;
     public Coordinates maxDimensions;
@@ -17,8 +16,7 @@ public class Table implements DocumentsRepresentable {
     public Table() {
         if (Table.tablesStatistics == null) Table.tablesStatistics = new TablesStatistics();
     }
-    @Override
-    public List<Triple<String, String, List<String>>> getDocumentsRepresentation() {
+    public List<ColumnRepresentation> getColumns() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
         Map<Integer, List<String>> columnIndex2elements = new HashMap<>();
         for (Cell cell: cells) {
@@ -34,15 +32,15 @@ public class Table implements DocumentsRepresentable {
                 columnIndex2elements.put(cell.Coordinates.column, elements);
             }
         }
-        List<Triple<String, String, List<String>>> tableDocument = new ArrayList<>();
+        List<ColumnRepresentation> columns = new ArrayList<>();
         for (Integer i: columnIndex2elements.keySet()) {
-            Triple<String, String, List<String>> column = new Triple<>();
-            column.first = this.id;
-            column.second = headerIndex2Name.get(i);
-            column.third = columnIndex2elements.get(i);
-            tableDocument.add(column);
+            ColumnRepresentation column = new ColumnRepresentation();
+            column.setTableName(this.id);
+            column.setColumnName(headerIndex2Name.get(i));
+            column.setFields(columnIndex2elements.get(i));
+            columns.add(column);
         }
-        Table.tablesStatistics.processTableStats(this, tableDocument);
-        return tableDocument;
+        Table.tablesStatistics.processTableStats(this, columns);
+        return columns;
     }
 }
