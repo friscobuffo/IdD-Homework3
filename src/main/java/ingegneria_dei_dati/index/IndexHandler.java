@@ -1,7 +1,7 @@
 package ingegneria_dei_dati.index;
 
 import ingegneria_dei_dati.documents.TablesHandler;
-import ingegneria_dei_dati.documents.ColumnRepresentation;
+import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
@@ -31,7 +31,7 @@ public class IndexHandler implements IndexHandlerInterface{
         Path path_ = Paths.get(path);
         this.directory = FSDirectory.open(path_);
     }
-    public void add2Index(ColumnRepresentation column) throws IOException {
+    public void add2Index(Column column) throws IOException {
         String tableId = column.getTableName();
         String columnId = column.getColumnName();
         List<String> text = column.getFields();
@@ -53,7 +53,7 @@ public class IndexHandler implements IndexHandlerInterface{
         int i=0;
         while (tablesHandler.hasNextColumn()) {
             i += 1;
-            ColumnRepresentation column = tablesHandler.readNextColumn();
+            Column column = tablesHandler.readNextColumn();
             this.add2Index(column);
             if(i%1000 == 0) this.writer.commit();
             System.out.print("\rindexed columns: "+i);

@@ -1,13 +1,14 @@
 package ingegneria_dei_dati.documents;
 
 import com.google.gson.Gson;
+import ingegneria_dei_dati.table.Column;
 import ingegneria_dei_dati.table.Table;
 
 import java.io.*;
 import java.util.List;
 
 public class JsonHandler implements TablesHandler {
-    private List<ColumnRepresentation> columns;
+    private List<Column> columns;
     private final BufferedReader reader; // il file json contiene un elemento (ovvero una tabella)
     // per ogni riga, quindi possiamo scorrere il file con il BufferedReader e parsare una riga alla volta
     private final Gson gson; // serve a convertire l'elemento del file json (passandolo in input
@@ -37,7 +38,7 @@ public class JsonHandler implements TablesHandler {
         }
     }
     @Override
-    public ColumnRepresentation readNextColumn() {
+    public Column readNextColumn() {
         return this.columns.removeFirst();
     }
 }

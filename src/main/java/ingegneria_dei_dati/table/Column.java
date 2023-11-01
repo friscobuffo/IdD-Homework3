@@ -1,8 +1,8 @@
-package ingegneria_dei_dati.documents;
+package ingegneria_dei_dati.table;
 
 import java.util.List;
 
-public class ColumnRepresentation {
+public class Column {
     private String tableName;
     private String columnName;
     private List<String> fields;

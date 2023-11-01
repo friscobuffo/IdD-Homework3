@@ -1,7 +1,5 @@
 package ingegneria_dei_dati.table;
 
-import ingegneria_dei_dati.documents.ColumnRepresentation;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +14,7 @@ public class Table {
     public Table() {
         if (Table.tablesStatistics == null) Table.tablesStatistics = new TablesStatistics();
     }
-    public List<ColumnRepresentation> getColumns() {
+    public List<Column> getColumns() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
         Map<Integer, List<String>> columnIndex2elements = new HashMap<>();
         for (Cell cell: cells) {
@@ -32,9 +30,9 @@ public class Table {
                 columnIndex2elements.put(cell.Coordinates.column, elements);
             }
         }
-        List<ColumnRepresentation> columns = new ArrayList<>();
+        List<Column> columns = new ArrayList<>();
         for (Integer i: columnIndex2elements.keySet()) {
-            ColumnRepresentation column = new ColumnRepresentation();
+            Column column = new Column();
             column.setTableName(this.id);
             column.setColumnName(headerIndex2Name.get(i));
             column.setFields(columnIndex2elements.get(i));
