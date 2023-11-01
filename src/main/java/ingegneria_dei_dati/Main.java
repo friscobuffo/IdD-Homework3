@@ -1,8 +1,8 @@
 package ingegneria_dei_dati;
 
 import ingegneria_dei_dati.index.IndexHandler;
-import ingegneria_dei_dati.documents.JsonHandler;
-import ingegneria_dei_dati.documents.TablesHandler;
+import ingegneria_dei_dati.reader.JsonColumnsReader;
+import ingegneria_dei_dati.reader.ColumnsReader;
 import ingegneria_dei_dati.table.Table;
 
 import java.io.IOException;
@@ -12,13 +12,13 @@ public class Main {
         String datasetPath = "tables.json";
         String indexPath = "index";
 
-        TablesHandler jsonHandler = new JsonHandler(datasetPath);
+        ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
         /* Al momento glielo passo come parametro di Input poi faremo le dovute scelte a riguardo,
          *   avevo pensato di creare l'istanza direttamente nel mentodo ma così, sempre e comunque diamo già per scontato
          *   che nella creazione dell'indice utilizzaimo sempre un file Json */
 
         IndexHandler indexHandler = new IndexHandler(indexPath);
-        indexHandler.createIndex(datasetPath, jsonHandler); // Lo so è grezzo ma è temporaneo per non avere errori sul main
+        indexHandler.createIndex(datasetPath, columnsReader); // Lo so è grezzo ma è temporaneo per non avere errori sul main
 
         Table.statistics.printStats();
         Table.statistics.runPythonScriptHistograms();

@@ -1,6 +1,6 @@
 package ingegneria_dei_dati.index;
 
-import ingegneria_dei_dati.documents.TablesHandler;
+import ingegneria_dei_dati.reader.ColumnsReader;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -45,15 +45,15 @@ public class IndexHandler implements IndexHandlerInterface{
         this.writer.addDocument(doc);
     }
     @Override
-    public void createIndex(String datasetPath, TablesHandler tablesHandler) throws IOException {
+    public void createIndex(String datasetPath, ColumnsReader columnsReader) throws IOException {
         this.analyzer = new StandardAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
         this.writer = new IndexWriter(directory, config);
         this.writer.deleteAll();
         int i=0;
-        while (tablesHandler.hasNextColumn()) {
+        while (columnsReader.hasNextColumn()) {
             i += 1;
-            Column column = tablesHandler.readNextColumn();
+            Column column = columnsReader.readNextColumn();
             this.add2Index(column);
             if(i%1000 == 0) this.writer.commit();
             System.out.print("\rindexed columns: "+i);

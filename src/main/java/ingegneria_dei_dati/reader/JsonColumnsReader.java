@@ -1,4 +1,4 @@
-package ingegneria_dei_dati.documents;
+package ingegneria_dei_dati.reader;
 
 import com.google.gson.Gson;
 import ingegneria_dei_dati.table.Column;
@@ -7,14 +7,14 @@ import ingegneria_dei_dati.table.Table;
 import java.io.*;
 import java.util.List;
 
-public class JsonHandler implements TablesHandler {
+public class JsonColumnsReader implements ColumnsReader {
     private List<Column> columns;
     private final BufferedReader reader; // il file json contiene un elemento (ovvero una tabella)
     // per ogni riga, quindi possiamo scorrere il file con il BufferedReader e parsare una riga alla volta
     private final Gson gson; // serve a convertire l'elemento del file json (passandolo in input
     // come stringa) in un oggetto java
 
-    public JsonHandler(String path) throws IOException {
+    public JsonColumnsReader(String path) throws IOException {
         this.reader = new BufferedReader(new FileReader(path));
         this.gson = new Gson();
     }

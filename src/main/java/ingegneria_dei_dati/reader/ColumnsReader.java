@@ -1,8 +1,8 @@
-package ingegneria_dei_dati.documents;
+package ingegneria_dei_dati.reader;
 
 import ingegneria_dei_dati.table.Column;
 
-public interface TablesHandler {
+public interface ColumnsReader {
     boolean hasNextColumn();
     Column readNextColumn();
 }
