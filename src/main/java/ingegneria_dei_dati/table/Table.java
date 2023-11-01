@@ -11,12 +11,8 @@ public class Table {
     public String id;
     public Cell[] cells;
     public Coordinates maxDimensions;
-    public static Statistics statistics;
-
-    public Table() {
-        if (Table.statistics == null) Table.statistics = new Statistics();
-    }
-    public List<Column> getColumns() {
+    public List<Column> columns;
+    public void makeColumns() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
         Map<Integer, List<String>> columnIndex2elements = new HashMap<>();
         for (Cell cell: cells) {
@@ -40,7 +36,6 @@ public class Table {
             column.setFields(columnIndex2elements.get(i));
             columns.add(column);
         }
-        Table.statistics.processTableStats(this, columns);
-        return columns;
+        this.columns = columns;
     }
 }

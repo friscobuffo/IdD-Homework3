@@ -1,6 +1,7 @@
 package ingegneria_dei_dati.reader;
 
 import com.google.gson.Gson;
+import ingegneria_dei_dati.statistics.Statistics;
 import ingegneria_dei_dati.table.Column;
 import ingegneria_dei_dati.table.Table;
 
@@ -26,7 +27,9 @@ public class JsonColumnsReader implements ColumnsReader {
             String nextLine = reader.readLine();
             if (nextLine != null) {
                 Table table = gson.fromJson(nextLine, Table.class);
-                this.columns = table.getColumns();
+                table.makeColumns();
+                Statistics.processTableStats(table);
+                this.columns = table.columns;
                 return true;
             }
             this.reader.close();

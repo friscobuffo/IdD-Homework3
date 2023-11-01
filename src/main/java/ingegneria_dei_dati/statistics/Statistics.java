@@ -11,71 +11,71 @@ import java.util.*;
 import java.util.List;
 
 public class Statistics {
-    public int totalTables = 0;
-    public int totalRows = 0;
-    public int totalColumns = 0;
-    public int emptyCells = 0;
-    public Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
-    public Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
-    public Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
+    public static int totalTables = 0;
+    public static int totalRows = 0;
+    public static int totalColumns = 0;
+    public static int emptyCells = 0;
+    public static Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
+    public static Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
+    public static Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
 
-    public void processTableStats(Table table, List<Column> tableRepresentation) {
+    public static void processTableStats(Table table) {
         // update of basic counters
-        this.totalTables += 1;
-        this.totalColumns += table.maxDimensions.column;
-        this.totalRows += table.maxDimensions.row;
+        Statistics.totalTables += 1;
+        Statistics.totalColumns += table.maxDimensions.column;
+        Statistics.totalRows += table.maxDimensions.row;
         // update of emptyCells
         for (Cell cell: table.cells) {
-            if (cell.cleanedText==null) this.emptyCells+=1;
-            else if (cell.cleanedText.isBlank()) this.emptyCells += 1;
+            if (cell.cleanedText==null) Statistics.emptyCells+=1;
+            else if (cell.cleanedText.isBlank()) Statistics.emptyCells += 1;
         }
         // update rowsNumber2tablesQuantity
-        if (this.rowsNumber2tablesQuantity.containsKey(table.maxDimensions.row)) {
-            int newValue = this.rowsNumber2tablesQuantity.get(table.maxDimensions.row)+1;
-            this.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
+        if (Statistics.rowsNumber2tablesQuantity.containsKey(table.maxDimensions.row)) {
+            int newValue = Statistics.rowsNumber2tablesQuantity.get(table.maxDimensions.row)+1;
+            Statistics.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
         }
         else rowsNumber2tablesQuantity.put(table.maxDimensions.row, 1);
         // update columnsNumber2tablesQuantity
-        if (this.columnsNumber2tablesQuantity.containsKey(table.maxDimensions.column)) {
-            int newValue = this.columnsNumber2tablesQuantity.get(table.maxDimensions.column)+1;
-            this.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
+        if (Statistics.columnsNumber2tablesQuantity.containsKey(table.maxDimensions.column)) {
+            int newValue = Statistics.columnsNumber2tablesQuantity.get(table.maxDimensions.column)+1;
+            Statistics.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
         }
         else columnsNumber2tablesQuantity.put(table.maxDimensions.column, 1);
         // update distinctValuesNumber2columnsQuantity
-        for (Column column: tableRepresentation) {
+        for (Column column: table.columns) {
             int distinctValues = (int) column.getFields().stream().distinct().count();
-            if (this.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
-                int newValue = this.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
-                this.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
+            if (Statistics.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
+                int newValue = Statistics.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
+                Statistics.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
             }
-            else this.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
+            else Statistics.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
         }
     }
-    public void printStats() {
+    public static void printStats() {
         System.out.print("totalTables -> ");
-        System.out.println(this.totalTables);
+        System.out.println(Statistics.totalTables);
         System.out.print("totalRows -> ");
-        System.out.println(this.totalRows);
+        System.out.println(Statistics.totalRows);
         System.out.print("totalColumns -> ");
-        System.out.println(this.totalColumns);
+        System.out.println(Statistics.totalColumns);
         System.out.print("emptyCells -> ");
-        System.out.println(this.emptyCells);
+        System.out.println(Statistics.emptyCells);
         System.out.print("rowsNumber2tablesQuantity -> ");
-        System.out.println(this.rowsNumber2tablesQuantity);
+        System.out.println(Statistics.rowsNumber2tablesQuantity);
         System.out.print("columnsNumber2tablesQuantity -> ");
-        System.out.println(this.columnsNumber2tablesQuantity);
+        System.out.println(Statistics.columnsNumber2tablesQuantity);
         System.out.print("distinctValuesNumber2columnsQuantity -> ");
-        System.out.println(this.distinctValuesNumber2columnsQuantity);
+        System.out.println(Statistics.distinctValuesNumber2columnsQuantity);
     }
 
-    public void saveStats() {
+    public static void saveStats() {
         saveBasicStats();
-        saveMapStats(this.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity");
-        saveMapStats(this.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity");
-        saveMapStats(this.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity");
+        saveMapStats(Statistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity");
+        saveMapStats(Statistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity");
+        saveMapStats(Statistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity");
     }
 
-    private <A,B> void saveMapStats(Map<A, B> map, String mapName) {
+    private static <A,B> void saveMapStats(Map<A, B> map, String mapName) {
         String path = "stats/";
         try {
             Files.createDirectories(Paths.get(path));
@@ -89,22 +89,22 @@ public class Statistics {
         }
         catch (IOException ignored) { }
     }
-    private void saveBasicStats() {
+    private static void saveBasicStats() {
         String path = "stats/";
         try {
             Files.createDirectories(Paths.get(path));
             FileWriter myWriter = new FileWriter(path+"basicStats.csv");
-            String line = "totalTables," + this.totalTables + "\n";
-            line += "totalRows," + this.totalRows + "\n";
-            line += "totalColumns," + this.totalColumns + "\n";
-            line += "emptyCells," + this.emptyCells + "\n";
+            String line = "totalTables," + Statistics.totalTables + "\n";
+            line += "totalRows," + Statistics.totalRows + "\n";
+            line += "totalColumns," + Statistics.totalColumns + "\n";
+            line += "emptyCells," + Statistics.emptyCells + "\n";
             myWriter.write(line);
             myWriter.close();
         }
         catch (IOException ignored) { }
     }
-    public void runPythonScriptHistograms() {
-        saveStats();
+    public static void saveStatsMakeHistograms() {
+        Statistics.saveStats();
         String path = System.getProperty("user.dir") + "/createHistograms.py";
         try {
             Runtime rt = Runtime.getRuntime();
