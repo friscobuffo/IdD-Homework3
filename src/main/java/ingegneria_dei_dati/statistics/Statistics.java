@@ -1,4 +1,8 @@
-package ingegneria_dei_dati.table;
+package ingegneria_dei_dati.statistics;
+
+import ingegneria_dei_dati.table.Cell;
+import ingegneria_dei_dati.table.Column;
+import ingegneria_dei_dati.table.Table;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -6,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
-public class TablesStatistics {
+public class Statistics {
     public int totalTables = 0;
     public int totalRows = 0;
     public int totalColumns = 0;

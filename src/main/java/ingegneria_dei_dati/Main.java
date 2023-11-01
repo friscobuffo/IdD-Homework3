@@ -20,7 +20,7 @@ public class Main {
         IndexHandler indexHandler = new IndexHandler(indexPath);
         indexHandler.createIndex(datasetPath, jsonHandler); // Lo so è grezzo ma è temporaneo per non avere errori sul main
 
-        Table.tablesStatistics.printStats();
-        Table.tablesStatistics.runPythonScriptHistograms();
+        Table.statistics.printStats();
+        Table.statistics.runPythonScriptHistograms();
     }
 }

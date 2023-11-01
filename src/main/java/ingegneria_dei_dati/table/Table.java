@@ -1,5 +1,7 @@
 package ingegneria_dei_dati.table;
 
+import ingegneria_dei_dati.statistics.Statistics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +11,10 @@ public class Table {
     public String id;
     public Cell[] cells;
     public Coordinates maxDimensions;
-    public static TablesStatistics tablesStatistics;
+    public static Statistics statistics;
 
     public Table() {
-        if (Table.tablesStatistics == null) Table.tablesStatistics = new TablesStatistics();
+        if (Table.statistics == null) Table.statistics = new Statistics();
     }
     public List<Column> getColumns() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
@@ -38,7 +40,7 @@ public class Table {
             column.setFields(columnIndex2elements.get(i));
             columns.add(column);
         }
-        Table.tablesStatistics.processTableStats(this, columns);
+        Table.statistics.processTableStats(this, columns);
         return columns;
     }
 }
