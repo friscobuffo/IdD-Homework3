@@ -15,25 +15,18 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Path path = Paths.get("index/index0");
-        Directory directory = FSDirectory.open(path);
-        IndexHandler indexHandler = new IndexHandler(directory);
 
-        JsonHandlerInterface jsonHandler = new JsonHandler("tables.json", Table.class);
-        int i=0;
-        while (jsonHandler.hasNextDocument()) {
-            i+=1;
-            Triple<String, String, List<String>> triple = jsonHandler.readNextDocument();
-            // prima stringa della tripla   = identificatore della tabella
-            // seconda stringa della tripla = identificatore della colonna
-            // terzo valore della tripla    = lista di stringhe della colonna (lista dei valori della colonna)
+        String datasetPath = "tables.json";
+        String indexPath = "index";
 
-            //indexHandler.add2Index(triple);
+        JsonHandlerInterface jsonHandler = new JsonHandler(datasetPath, Table.class);
+        /* Al momento glielo passo come parametro di Input poi faremo le dovute scelte a riguardo,
+         *   avevo pensato di creare l'istanza direttamente nel mentodo ma così, sempre e comunque diamo già per scontato
+         *   che nella creazione dell'indice utilizzaimo sempre un file Json */
 
-            //System.out.println(triple);
-            System.out.print("\rindexed columns: "+i);
-            if (i==10000) break;
-        }
+        IndexHandler indexHandler = new IndexHandler(indexPath);
+        indexHandler.createIndex(datasetPath, (JsonHandler) jsonHandler); // Lo so è grezzo ma è temporaneo per non avere errori sul main
+
         System.out.println("\rFinished indexing tables    ");
         Table.tablesStatistics.printStats();
         Table.tablesStatistics.runPythonScriptHistograms();
