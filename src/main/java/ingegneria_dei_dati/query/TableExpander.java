@@ -16,7 +16,6 @@ public class TableExpander {
     public TableExpander(String indexPath) {
         //this.indexHandler = new IndexHandler(indexPath);
     }
-
     private void searchForColumnExpansion(List<String> columnTerms){
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
 
@@ -28,6 +27,4 @@ public class TableExpander {
 
         //this.indexHandler.search(booleanQuery);
     }
-
-
 }

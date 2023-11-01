@@ -1,4 +1,4 @@
-package ingegneria_dei_dati.json;
+package ingegneria_dei_dati.documents;
 
 import ingegneria_dei_dati.utils.Triple;
 

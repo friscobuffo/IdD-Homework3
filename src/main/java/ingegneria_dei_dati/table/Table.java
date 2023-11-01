@@ -1,6 +1,6 @@
 package ingegneria_dei_dati.table;
 
-import ingegneria_dei_dati.json.DocumentsRepresentable;
+import ingegneria_dei_dati.documents.DocumentsRepresentable;
 import ingegneria_dei_dati.utils.Triple;
 
 import java.util.ArrayList;

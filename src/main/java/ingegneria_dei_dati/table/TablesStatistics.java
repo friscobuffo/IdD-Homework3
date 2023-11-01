@@ -49,7 +49,6 @@ public class TablesStatistics {
             else this.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
         }
     }
-
     public void printStats() {
         System.out.print("totalTables -> ");
         System.out.println(this.totalTables);
@@ -88,7 +87,6 @@ public class TablesStatistics {
         }
         catch (IOException ignored) { }
     }
-
     private void saveBasicStats() {
         String path = "stats/";
         try {
@@ -103,7 +101,6 @@ public class TablesStatistics {
         }
         catch (IOException ignored) { }
     }
-
     public void runPythonScriptHistograms() {
         saveStats();
         String path = System.getProperty("user.dir") + "/createHistograms.py";
