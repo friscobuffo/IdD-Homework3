@@ -26,7 +26,7 @@ if not os.path.exists(histogramsFolderAbsolutePath):
 	os.makedirs(histogramsFolderAbsolutePath)
 	   
 x = np.array([key for key in columnsNumber2tablesQuantity for _ in range(columnsNumber2tablesQuantity[key])])
-plt.hist(x, 20, (1,15))
+plt.hist(x, 22, (1,22))
 plt.savefig(histogramsFolderAbsolutePath + "columnsNumber2tablesQuantity.jpg")
 plt.clf()
 
@@ -36,7 +36,7 @@ plt.savefig(histogramsFolderAbsolutePath + "rowsNumber2tablesQuantity.jpg")
 plt.clf()
 
 x = np.array([key for key in distinctValuesNumber2columnsQuantity for _ in range(distinctValuesNumber2columnsQuantity[key])])
-plt.hist(x, 80, (1,80))
+plt.hist(x, 60, (1,60))
 plt.savefig(histogramsFolderAbsolutePath + "distinctValuesNumber2columnsQuantity.jpg")
 plt.clf()
 plt.close()

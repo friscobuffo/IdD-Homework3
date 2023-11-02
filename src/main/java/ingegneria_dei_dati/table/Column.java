@@ -6,6 +6,7 @@ public class Column {
     private String tableName;
     private String columnName;
     private List<String> fields;
+    private static int idForNullHeader = 0;
 
     @Override
     public String toString() {
@@ -15,28 +16,23 @@ public class Column {
         if (this.fields != null) output += ("fields: " + this.fields + "\n");
         return output;
     }
-
     public String getTableName() {
         return tableName;
     }
-
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
-
     public String getColumnName() {
-        if (columnName==null) return "header";
+        if (columnName==null)
+            return String.valueOf(Column.idForNullHeader++);
         return columnName;
     }
-
     public void setColumnName(String columnName) {
         this.columnName = columnName;
     }
-
     public List<String> getFields() {
         return fields;
     }
-
     public void setFields(List<String> fields) {
         this.fields = fields;
     }
