@@ -11,6 +11,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.TextField;
@@ -21,9 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class IndexHandler implements IndexHandlerInterface{
-    private IndexWriter writer;
-    private IndexSearcher searcher;
+public class IndexHandler implements IndexHandlerInterface {
     private final Directory directory;
     private Analyzer analyzer;
     private int indexedTables;
@@ -33,7 +33,7 @@ public class IndexHandler implements IndexHandlerInterface{
         Path path_ = Paths.get(path);
         this.directory = FSDirectory.open(path_);
     }
-    public void add2Index(Column column) throws IOException {
+    private void add2Index(Column column, IndexWriter writer) throws IOException {
         String tableId = column.getTableName();
         String columnId = column.getColumnName();
         List<String> text = column.getFields();
@@ -44,31 +44,42 @@ public class IndexHandler implements IndexHandlerInterface{
         for (String value : text){
             doc.add(new TextField("text", value, Field.Store.NO));
         }
-        this.writer.addDocument(doc);
+        writer.addDocument(doc);
     }
     @Override
     public void createIndex(String datasetPath, ColumnsReader columnsReader) throws IOException {
         this.indexedTables = 0;
         this.analyzer = new StandardAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
-        this.writer = new IndexWriter(directory, config);
-        this.writer.deleteAll();
+        IndexWriter writer = new IndexWriter(directory, config);
+        writer.deleteAll();
         int i=0;
         while (columnsReader.hasNextColumn()) {
             i += 1;
             Column column = columnsReader.readNextColumn();
-            this.add2Index(column);
-            if(i%1000 == 0) this.writer.commit();
+            this.add2Index(column, writer);
+            if(i%1000 == 0) writer.commit();
             this.prints(i, column.getTableName());
         }
-        this.writer.commit();
-        this.writer.close();
+        writer.commit();
+        writer.close();
         System.out.println("\nfinished indexing columns\n");
     }
     @Override
     public void search(Query query) throws IOException {
         try (IndexReader reader = DirectoryReader.open(this.directory)){
-            this.searcher = new IndexSearcher(reader);
+            IndexSearcher searcher = new IndexSearcher(reader);
+            TopDocs hits = searcher.search(query, 10);
+
+            //Print the count of matching documents.
+            //just for debug purposes
+            System.out.println("Found " + hits.totalHits.toString() + "!");
+
+            //Print names and scores of matching documents.
+            for (ScoreDoc scoreDoc : hits.scoreDocs) {
+                Document doc = searcher.doc(scoreDoc.doc);
+                System.out.println("Name: " + doc.get("name") + " --> Score: " + scoreDoc.score);
+            }
         }
     }
     @Override
