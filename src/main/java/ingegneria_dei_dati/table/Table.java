@@ -1,7 +1,5 @@
 package ingegneria_dei_dati.table;
 
-import ingegneria_dei_dati.statistics.Statistics;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +10,7 @@ public class Table {
     public Cell[] cells;
     public Coordinates maxDimensions;
     public List<Column> columns;
+
     public void makeColumns() {
         Map<Integer, String> headerIndex2Name = new HashMap<>();
         Map<Integer, List<String>> columnIndex2elements = new HashMap<>();
