@@ -12,9 +12,10 @@ public class Main {
         String datasetPath = "tables.json";
         String indexPath = "index";
 
-        //ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
-        //IndexHandler indexHandler = new IndexHandler(indexPath);
-        //indexHandler.createIndex(datasetPath, columnsReader);
+        ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
+        IndexHandler indexHandler = new IndexHandler(indexPath);
+        indexHandler.createIndex(datasetPath, columnsReader);
+
         Statistics.printStats();
         Statistics.saveStatsMakeHistograms();
     }
