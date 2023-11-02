@@ -69,6 +69,7 @@ public class IndexHandler implements IndexHandlerInterface {
     public void search(Query query) throws IOException {
         try (IndexReader reader = DirectoryReader.open(this.directory)){
             IndexSearcher searcher = new IndexSearcher(reader);
+            searcher.setSimilarity(new IntersectionSimilarity());
             TopDocs hits = searcher.search(query, 10);
 
             //Print the count of matching documents.
