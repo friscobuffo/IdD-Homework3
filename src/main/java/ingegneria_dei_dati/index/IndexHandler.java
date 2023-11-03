@@ -1,7 +1,7 @@
 package ingegneria_dei_dati.index;
 
 import ingegneria_dei_dati.reader.ColumnsReader;
-import ingegneria_dei_dati.sample.SampleMaker;
+import ingegneria_dei_dati.sample.SamplesHandler;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -54,19 +54,20 @@ public class IndexHandler implements IndexHandlerInterface {
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
-        SampleMaker sampleMaker = new SampleMaker(100);
+        SamplesHandler samplesHandler = new SamplesHandler();
+        samplesHandler.makeSample(1000);
         int i=0;
         while (columnsReader.hasNextColumn()) {
             i += 1;
             Column column = columnsReader.readNextColumn();
-            sampleMaker.addToSampleProbabilistic(column);
+            samplesHandler.addToSampleProbabilistic(column);
             this.add2Index(column, writer);
             if(i%1000 == 0) writer.commit();
             this.prints(i, column.getTableName());
         }
         writer.commit();
         writer.close();
-        sampleMaker.saveSample();
+        samplesHandler.saveSample();
         System.out.println("\nfinished indexing columns\n");
     }
     @Override
