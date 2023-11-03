@@ -26,13 +26,14 @@ import java.util.List;
 
 public class IndexHandler implements IndexHandlerInterface {
     private final Directory directory;
-    private Analyzer analyzer;
+    private final Analyzer analyzer;
     private int indexedTables;
     private String lastTableName;
 
     public IndexHandler(String path) throws IOException {
         Path path_ = Paths.get(path);
         this.directory = FSDirectory.open(path_);
+        this.analyzer = new StandardAnalyzer();
     }
     private void add2Index(Column column, IndexWriter writer) throws IOException {
         String tableId = column.getTableName();
@@ -40,8 +41,8 @@ public class IndexHandler implements IndexHandlerInterface {
         List<String> text = column.getFields();
 
         Document doc = new Document();
-        doc.add(new TextField("table_id", tableId, Field.Store.NO));
-        doc.add(new TextField("column_id", columnId, Field.Store.NO));
+        doc.add(new TextField("table_id", tableId, Field.Store.YES));
+        doc.add(new TextField("column_id", columnId, Field.Store.YES));
         for (String value : text){
             doc.add(new TextField("text", value, Field.Store.NO));
         }
@@ -50,7 +51,6 @@ public class IndexHandler implements IndexHandlerInterface {
     @Override
     public void createIndex(String datasetPath, ColumnsReader columnsReader) throws IOException {
         this.indexedTables = 0;
-        this.analyzer = new StandardAnalyzer();
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
@@ -83,7 +83,7 @@ public class IndexHandler implements IndexHandlerInterface {
             //Print names and scores of matching documents.
             for (ScoreDoc scoreDoc : hits.scoreDocs) {
                 Document doc = searcher.doc(scoreDoc.doc);
-                System.out.println("Name: " + doc.get("name") + " --> Score: " + scoreDoc.score);
+                System.out.println("Table: " + doc.get("table_id") + " Column: " + doc.get("column_id") + " --> Score: " + scoreDoc.score);
             }
         }
     }
