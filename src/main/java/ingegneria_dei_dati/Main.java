@@ -13,11 +13,11 @@ public class Main {
         String datasetPath = "tables.json";
         String indexPath = "index";
 
-        ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
-        IndexHandler indexHandler = new IndexHandler(indexPath);
-        indexHandler.createIndex(datasetPath, columnsReader);
-        Statistics.printStats();
-        Statistics.saveStatsMakeHistograms();
+        //ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
+        //IndexHandler indexHandler = new IndexHandler(indexPath);
+        //indexHandler.createIndex(datasetPath, columnsReader);
+        //Statistics.printStats();
+        //Statistics.saveStatsMakeHistograms();
 
         TableExpander tableExpander = new TableExpander(indexPath);
         tableExpander.searchForColumnExpansion("katab die ʼaktubu taktubīna taktubu yaktubu taktubāni yaktubāni naktubu");
