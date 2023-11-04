@@ -19,7 +19,7 @@ public class TableExpander {
     public TableExpander(String indexPath) throws IOException {
         this.indexHandler = new IndexHandler(indexPath);
     }
-    private void searchForColumnExpansion(String query) throws IOException {
+    public void searchForColumnExpansion(String query) throws IOException {
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
         List<String> terms = this.tokenizeString(query);
 

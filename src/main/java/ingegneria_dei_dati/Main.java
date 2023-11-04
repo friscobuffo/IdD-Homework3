@@ -4,6 +4,7 @@ import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.reader.JsonColumnsReader;
 import ingegneria_dei_dati.reader.ColumnsReader;
 import ingegneria_dei_dati.statistics.Statistics;
+import ingegneria_dei_dati.tableUtilities.TableExpander;
 
 import java.io.IOException;
 
@@ -12,11 +13,13 @@ public class Main {
         String datasetPath = "tables.json";
         String indexPath = "index";
 
-        ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
-        IndexHandler indexHandler = new IndexHandler(indexPath);
-        indexHandler.createIndex(datasetPath, columnsReader);
+        //ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
+        //IndexHandler indexHandler = new IndexHandler(indexPath);
+        //indexHandler.createIndex(datasetPath, columnsReader);
+        //Statistics.printStats();
+        //Statistics.saveStatsMakeHistograms();
 
-        Statistics.printStats();
-        Statistics.saveStatsMakeHistograms();
+        TableExpander tableExpander = new TableExpander(indexPath);
+        tableExpander.searchForColumnExpansion("katab die ʼaktubu taktubīna taktubu yaktubu taktubāni yaktubāni naktubu");
     }
 }
