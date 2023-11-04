@@ -2,6 +2,8 @@ package ingegneria_dei_dati.tableUtilities;
 
 import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.index.IndexHandlerInterface;
+import ingegneria_dei_dati.sample.SamplesHandler;
+import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
@@ -34,24 +36,26 @@ public class TableExpander {
         return expansionStats;
     }
 
-    private List<String> tokenizeString(String query) {
+    private List<String> tokenizeString(String query) throws IOException {
         List<String> terms = new ArrayList<String>();
-        try {
-            TokenStream stream  = this.indexHandler.getAnalyzer().tokenStream(this.FIELD, new StringReader(query));
+        try(TokenStream stream  = this.indexHandler.getAnalyzer().tokenStream(this.FIELD, new StringReader(query))) {
             stream.reset();
             while (stream.incrementToken()) {
                 terms.add(stream.getAttribute(CharTermAttribute.class).toString());
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return terms;
         }
-        return terms;
     }
 
     public static void main(String[] args) throws IOException {
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
-        tableExpander.searchForColumnExpansion("katab die ʼaktubu taktubīna taktubu yaktubu taktubāni yaktubāni naktubu").toString();
+        SamplesHandler samplesHandler = new SamplesHandler();
+        List<Column> samples = samplesHandler.readSample();
+        for(Column sample : samples.subList(0,2)){
+            System.out.println(tableExpander.searchForColumnExpansion(sample.fieldsStringRepresentation()).toString());
+        }
+
     }
 
 }
