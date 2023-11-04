@@ -6,6 +6,10 @@ import java.util.List;
 public class ExpansionStats {
     private final long hits;
     private final List<ColumnStats> columnsStats;
+    private final String bold = "\u001B[1m";
+    private final String greenColor = "\u001B[32m";
+    private final String resetColor = "\u001B[0m";
+    private final String reset = "\u001B[0m";
 
     public ExpansionStats(long hits) {
         this.hits = hits;
@@ -17,9 +21,13 @@ public class ExpansionStats {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("TotHits: ")
-        .append(this.hits)
-        .append('\n');
+        stringBuilder.append(bold)
+                .append("TotHits: ")
+                .append(greenColor)
+                .append(this.hits)
+                .append(resetColor)
+                .append(reset)
+                .append('\n');
         for(ColumnStats columnStats : this.columnsStats){
             stringBuilder.append(columnStats.toString()).append('\n');
         }
