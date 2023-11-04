@@ -55,7 +55,6 @@ public class TableExpander {
         for(Column sample : samples.subList(0,2)){
             System.out.println(tableExpander.searchForColumnExpansion(sample.fieldsStringRepresentation()).toString());
         }
-
     }
 
 }
