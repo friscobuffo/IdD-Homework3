@@ -10,14 +10,18 @@ public class Column {
 
     @Override
     public String toString() {
-        String output = "";
-        if (this.tableName != null) output += ("table: " + this.tableName + "\n");
-        if (this.columnName != null) output += ("column:" + this.columnName + "\n");
-        if (this.fields != null) output += ("fields: " + this.fields + "\n");
-        return output;
+        StringBuilder output = new StringBuilder();
+        if (this.tableName != null) output.append("table: ").append(this.tableName).append("\n");
+        if (this.columnName != null) output.append("column: ").append(this.columnName).append("\n");
+        if (this.fields != null) output.append("fields: ").append(this.fields).append("\n");
+        return output.toString();
     }
-    public String fieldsRepresentation() {
-        return null;
+    public String fieldsStringRepresentation() {
+        StringBuilder fieldsRepresentation = new StringBuilder();
+        for (String field: this.fields) {
+            fieldsRepresentation.append(field).append(" ");
+        }
+        return fieldsRepresentation.toString();
     }
     public String getTableName() {
         return tableName;
