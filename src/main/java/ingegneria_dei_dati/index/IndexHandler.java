@@ -1,8 +1,11 @@
 package ingegneria_dei_dati.index;
 
 import ingegneria_dei_dati.reader.ColumnsReader;
+import ingegneria_dei_dati.reader.JsonColumnsReader;
 import ingegneria_dei_dati.sample.SamplesHandler;
+import ingegneria_dei_dati.statistics.Statistics;
 import ingegneria_dei_dati.table.Column;
+import ingegneria_dei_dati.tableUtilities.ExpansionStats;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
@@ -71,21 +74,22 @@ public class IndexHandler implements IndexHandlerInterface {
         System.out.println("\nfinished indexing columns\n");
     }
     @Override
-    public void search(Query query) throws IOException {
+    public ExpansionStats search(Query query, int maxHits) throws IOException {
         try (IndexReader reader = DirectoryReader.open(this.directory)){
             IndexSearcher searcher = new IndexSearcher(reader);
             searcher.setSimilarity(new IntersectionSimilarity());
-            TopDocs hits = searcher.search(query, 10);
+            TopDocs hits = searcher.search(query, maxHits);
 
-            //Print the count of matching documents.
-            //just for debug purposes
-            System.out.println("Found " + hits.totalHits.toString() + "!");
+            ExpansionStats expansionStats = new ExpansionStats(hits.totalHits.value);
+
 
             //Print names and scores of matching documents.
             for (ScoreDoc scoreDoc : hits.scoreDocs) {
                 Document doc = searcher.doc(scoreDoc.doc);
-                System.out.println("Table: " + doc.get("table_id") + " Column: " + doc.get("column_id") + " --> Score: " + scoreDoc.score);
+                expansionStats.addColumnStat(doc.get("table_id"),doc.get("column_id"),scoreDoc.score);
             }
+
+            return expansionStats;
         }
     }
     @Override
@@ -101,5 +105,16 @@ public class IndexHandler implements IndexHandlerInterface {
         System.out.print("\rindexed tables: "+this.indexedTables);
         System.out.print(" - ");
         System.out.print("indexed columns: "+indexedColumns);
+    }
+
+    public static void main(String[] args) throws IOException {
+        String datasetPath = "tables.json";
+        String indexPath = "index";
+
+        ColumnsReader columnsReader = new JsonColumnsReader(datasetPath);
+        IndexHandler indexHandler = new IndexHandler(indexPath);
+        indexHandler.createIndex(datasetPath, columnsReader);
+        Statistics.printStats();
+        Statistics.saveStatsMakeHistograms();
     }
 }

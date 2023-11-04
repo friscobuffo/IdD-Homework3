@@ -19,7 +19,7 @@ public class TableExpander {
     public TableExpander(String indexPath) throws IOException {
         this.indexHandler = new IndexHandler(indexPath);
     }
-    public void searchForColumnExpansion(String query) throws IOException {
+    public ExpansionStats searchForColumnExpansion(String query) throws IOException {
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
         List<String> terms = this.tokenizeString(query);
 
@@ -29,8 +29,9 @@ public class TableExpander {
         }
         BooleanQuery booleanQuery = booleanQueryBuilder.build();
 
-        this.indexHandler.search(booleanQuery);
-
+        ExpansionStats expansionStats = this.indexHandler.search(booleanQuery, 10);
+        expansionStats.normalize(terms.size());
+        return expansionStats;
     }
 
     private List<String> tokenizeString(String query) {
@@ -45,6 +46,12 @@ public class TableExpander {
             throw new RuntimeException(e);
         }
         return terms;
+    }
+
+    public static void main(String[] args) throws IOException {
+        String indexPath = "index";
+        TableExpander tableExpander = new TableExpander(indexPath);
+        tableExpander.searchForColumnExpansion("katab die ʼaktubu taktubīna taktubu yaktubu taktubāni yaktubāni naktubu").toString();
     }
 
 }
