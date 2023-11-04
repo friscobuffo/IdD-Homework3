@@ -56,7 +56,7 @@ public class TestColumnExpander {
         column1 = columnStats.get(1);
         assertEquals(column1.getTableId(), "bibite cocacola");
         assertEquals(column1.getColumnId(), "marche");
-        //assertEquals(0.5, column1.getColumnScore(), 0.0);
+        assertEquals(0.66, column1.getColumnScore(), 0.01);
     }
     @Test
     public void testSample() throws IOException {
