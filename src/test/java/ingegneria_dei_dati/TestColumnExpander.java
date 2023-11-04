@@ -1,7 +1,9 @@
 package ingegneria_dei_dati;
 
 import ingegneria_dei_dati.index.IndexHandler;
+import ingegneria_dei_dati.sample.SamplesHandler;
 import ingegneria_dei_dati.table.Column;
+import ingegneria_dei_dati.tableUtilities.ColumnStats;
 import ingegneria_dei_dati.tableUtilities.TableExpander;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +11,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestColumnExpander {
     private final String testIndexPath = "test-index";
@@ -30,8 +34,15 @@ public class TestColumnExpander {
         indexHandler.createIndex(columns);
     }
     @Test
-    public void test1() throws IOException {
+    public void testMyColumns() throws IOException {
         TableExpander tableExpander = new TableExpander(testIndexPath);
-        System.out.println(tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation()));
+        ColumnStats column = tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation()).getColumnsStats().get(1);
+        assertEquals(column.getTableId(), "auto costose");
+        assertEquals(column.getColumnId(), "marche");
+        assertEquals(0.5, column.getColumnScore(), 0.0);
+    }
+    @Test
+    public void testSample() throws IOException {
+        List<Column> columns = new SamplesHandler().readSample();
     }
 }

@@ -96,7 +96,6 @@ public class IndexHandler implements IndexHandlerInterface {
     public Analyzer getAnalyzer() {
         return this.analyzer;
     }
-
     private void prints(int indexedColumns, String tableName) {
         if (!tableName.equals(this.lastTableName)) {
             this.indexedTables += 1;

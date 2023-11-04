@@ -17,4 +17,13 @@ public class ColumnStats {
     public void normalize(int columnLen) {
         this.columnScore /= columnLen;
     }
+    public String getTableId() {
+        return this.tableId;
+    }
+    public String getColumnId() {
+        return this.columnId;
+    }
+    public float getColumnScore() {
+        return columnScore;
+    }
 }

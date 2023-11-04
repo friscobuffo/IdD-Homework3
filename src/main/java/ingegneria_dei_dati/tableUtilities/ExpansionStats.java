@@ -30,4 +30,7 @@ public class ExpansionStats {
             columnStats.normalize(columnLen);
         }
     }
+    public List<ColumnStats> getColumnsStats() {
+        return this.columnsStats;
+    }
 }
