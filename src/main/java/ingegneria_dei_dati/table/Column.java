@@ -26,21 +26,24 @@ public class Column {
     public String getTableName() {
         return tableName;
     }
-    public void setTableName(String tableName) {
+    public Column setTableName(String tableName) {
         this.tableName = tableName;
+        return this;
     }
     public String getColumnName() {
         if (columnName==null)
             return String.valueOf(Column.idForNullHeader++);
         return columnName;
     }
-    public void setColumnName(String columnName) {
+    public Column setColumnName(String columnName) {
         this.columnName = columnName;
+        return this;
     }
     public List<String> getFields() {
         return fields;
     }
-    public void setFields(List<String> fields) {
+    public Column setFields(List<String> fields) {
         this.fields = fields;
+        return this;
     }
 }

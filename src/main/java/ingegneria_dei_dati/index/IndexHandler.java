@@ -102,4 +102,14 @@ public class IndexHandler implements IndexHandlerInterface {
         System.out.print(" - ");
         System.out.print("indexed columns: "+indexedColumns);
     }
+    public void createIndex(List<Column> columns) throws IOException {
+        IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
+        IndexWriter writer = new IndexWriter(directory, config);
+        writer.deleteAll();
+        for (Column column : columns) {
+            this.add2Index(column, writer);
+        }
+        writer.commit();
+        writer.close();
+    }
 }
