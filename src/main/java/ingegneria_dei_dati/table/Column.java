@@ -6,7 +6,7 @@ public class Column {
     private String tableName;
     private String columnName;
     private List<String> fields;
-    private static int idForNullHeader = 0;
+    private static int idForNullHeader = 0; // useful to give a name to columns that haven't a header
 
     @Override
     public String toString() {
