@@ -6,34 +6,44 @@ public class Column {
     private String tableName;
     private String columnName;
     private List<String> fields;
-    private static int idForNullHeader = 0;
+    private static int idForNullHeader = 0; // useful to give a name to columns that haven't a header
 
     @Override
     public String toString() {
-        String output = "";
-        if (this.tableName != null) output += ("table: " + this.tableName + "\n");
-        if (this.columnName != null) output += ("column:" + this.columnName + "\n");
-        if (this.fields != null) output += ("fields: " + this.fields + "\n");
-        return output;
+        StringBuilder output = new StringBuilder();
+        if (this.tableName != null) output.append("table: ").append(this.tableName).append("\n");
+        if (this.columnName != null) output.append("column: ").append(this.columnName).append("\n");
+        if (this.fields != null) output.append("fields: ").append(this.fields).append("\n");
+        return output.toString();
+    }
+    public String fieldsStringRepresentation() {
+        StringBuilder fieldsRepresentation = new StringBuilder();
+        for (String field: this.fields) {
+            fieldsRepresentation.append(field).append(" ");
+        }
+        return fieldsRepresentation.toString();
     }
     public String getTableName() {
         return tableName;
     }
-    public void setTableName(String tableName) {
+    public Column setTableName(String tableName) {
         this.tableName = tableName;
+        return this;
     }
     public String getColumnName() {
         if (columnName==null)
             return String.valueOf(Column.idForNullHeader++);
         return columnName;
     }
-    public void setColumnName(String columnName) {
+    public Column setColumnName(String columnName) {
         this.columnName = columnName;
+        return this;
     }
     public List<String> getFields() {
         return fields;
     }
-    public void setFields(List<String> fields) {
+    public Column setFields(List<String> fields) {
         this.fields = fields;
+        return this;
     }
 }

@@ -22,7 +22,7 @@ public class SamplesHandler {
         this.sampleSize = sampleSize;
         this.sample = new ArrayList<>();
         this.currentElementIndex = 0;
-        this.random = new Random();
+        this.random = new Random(12345);
     }
     public void addToSampleProbabilistic(Column column) {
         this.currentElementIndex++;
