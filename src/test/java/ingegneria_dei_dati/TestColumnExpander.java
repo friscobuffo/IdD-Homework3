@@ -26,7 +26,8 @@ public class TestColumnExpander {
         columns.add(new Column().setTableName("auto").setColumnName("audi").setFields(List.of(new String[]{"audi", "audi", "audi", "audi", "audi", "audi"})));
         columns.add(new Column().setTableName("auto costose").setColumnName("marche").setFields(List.of(new String[]{"audi", "bmw", "mercedes",
                 "ferrari", "lamborghini"})));
-        columns.add(new Column().setTableName("bibite").setColumnName("marche").setFields(List.of(new String[]{"cocacola", "fanta", "sprite", "7up", "pepsi"})));
+        columns.add(new Column().setTableName("bibite").setColumnName("marche").setFields(List.of(new String[]{"cocacola", "fanta", "fanta", "sprite",
+                "7up", "pepsi"})));
         columns.add(new Column().setTableName("cocacola").setColumnName("nome").setFields(List.of(new String[]{"cocacola", "cocacola", "cocacola"})));
         columns.add(new Column().setTableName("bibite cocacola").setColumnName("marche").setFields(List.of(new String[]{"cocacola", "fanta", "sprite"})));
         columns.add(new Column().setTableName("bibite pepsi").setColumnName("marche").setFields(List.of(new String[]{"7up", "pepsi"})));
@@ -36,13 +37,35 @@ public class TestColumnExpander {
     @Test
     public void testMyColumns() throws IOException {
         TableExpander tableExpander = new TableExpander(testIndexPath);
-        ColumnStats column = tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation()).getColumnsStats().get(1);
-        assertEquals(column.getTableId(), "auto costose");
-        assertEquals(column.getColumnId(), "marche");
-        assertEquals(0.5, column.getColumnScore(), 0.0);
+        // auto
+        List<ColumnStats> columnStats = tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation()).getColumnsStats();
+        ColumnStats column0 = columnStats.get(0);
+        assertEquals(column0.getTableId(), columns.get(0).getTableName());
+        assertEquals(column0.getColumnId(), columns.get(0).getColumnName());
+        assertEquals(1, column0.getColumnScore(), 0.0);
+        ColumnStats column1 = columnStats.get(1);
+        assertEquals(column1.getTableId(), "auto costose");
+        assertEquals(column1.getColumnId(), "marche");
+        assertEquals(0.5, column1.getColumnScore(), 0.0);
+        // bibite
+        columnStats = tableExpander.searchForColumnExpansion(columns.get(4).fieldsStringRepresentation()).getColumnsStats();
+        column0 = columnStats.get(0);
+        assertEquals(column0.getTableId(), columns.get(4).getTableName());
+        assertEquals(column0.getColumnId(), columns.get(4).getColumnName());
+        assertEquals(1, column0.getColumnScore(), 0.0);
+        column1 = columnStats.get(1);
+        assertEquals(column1.getTableId(), "bibite cocacola");
+        assertEquals(column1.getColumnId(), "marche");
+        //assertEquals(0.5, column1.getColumnScore(), 0.0);
     }
     @Test
     public void testSample() throws IOException {
         List<Column> columns = new SamplesHandler().readSample();
+        assertEquals(columns.size(), 1000);
+        String indexPath = "index";
+        TableExpander tableExpander = new TableExpander(indexPath);
+        for(Column column : columns.subList(0,2)){
+            System.out.println(tableExpander.searchForColumnExpansion(column.fieldsStringRepresentation()).toString());
+        }
     }
 }

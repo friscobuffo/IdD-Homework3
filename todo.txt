@@ -1,1 +1,1 @@
-creare test con preset di colonne
+aggiungere timestamps creazione indice
