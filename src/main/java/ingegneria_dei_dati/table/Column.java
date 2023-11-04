@@ -16,6 +16,9 @@ public class Column {
         if (this.fields != null) output += ("fields: " + this.fields + "\n");
         return output;
     }
+    public String fieldsRepresentation() {
+        return null;
+    }
     public String getTableName() {
         return tableName;
     }
