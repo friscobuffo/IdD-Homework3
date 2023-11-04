@@ -33,7 +33,6 @@ public class TableExpander {
         expansionStats.normalize(terms.size());
         return expansionStats;
     }
-
     private List<String> tokenizeString(String query) {
         List<String> terms = new ArrayList<String>();
         try {
@@ -47,11 +46,9 @@ public class TableExpander {
         }
         return terms;
     }
-
     public static void main(String[] args) throws IOException {
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
         tableExpander.searchForColumnExpansion("katab die ʼaktubu taktubīna taktubu yaktubu taktubāni yaktubāni naktubu").toString();
     }
-
 }
