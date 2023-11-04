@@ -21,10 +21,11 @@ public class ExpansionStats {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.hits);
-        stringBuilder.append('\n');
+        stringBuilder.append("TotHits: ")
+        .append(this.hits)
+        .append('\n');
         for(ColumnStats columnStats : this.columnsStats){
-            stringBuilder.append(columnStats.toString());
+            stringBuilder.append(columnStats.toString()).append('\n');
         }
         return stringBuilder.toString();
     }

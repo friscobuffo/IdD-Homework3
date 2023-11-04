@@ -32,6 +32,6 @@ public class TestColumnExpander {
     @Test
     public void test1() throws IOException {
         TableExpander tableExpander = new TableExpander(testIndexPath);
-        tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation());
+        System.out.println(tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation()));
     }
 }
