@@ -23,18 +23,15 @@ public class TestColumnExpander {
         columns.add(new Column().setTableName("auto costose").setColumnName("marche").setFields(List.of(new String[]{"audi", "bmw", "mercedes",
                 "ferrari", "lamborghini"})));
         columns.add(new Column().setTableName("bibite").setColumnName("marche").setFields(List.of(new String[]{"cocacola", "fanta", "sprite", "7up", "pepsi"})));
-        c = new Column().setTableName("cocacola").setColumnName("nome").setFields(List.of(new String[]{"cocacola", "cocacola", "cocacola"}));
-        columns.add(c);
-        c = new Column().setTableName("bibite cocacola").setColumnName("marche").setFields(List.of(new String[]{"cocacola", "fanta", "sprite"}));
-        columns.add(c);
-        c = new Column().setTableName("bibite pepsi").setColumnName("marche").setFields(List.of(new String[]{"7up", "pepsi"}));
-        columns.add(c);
+        columns.add(new Column().setTableName("cocacola").setColumnName("nome").setFields(List.of(new String[]{"cocacola", "cocacola", "cocacola"})));
+        columns.add(new Column().setTableName("bibite cocacola").setColumnName("marche").setFields(List.of(new String[]{"cocacola", "fanta", "sprite"})));
+        columns.add(new Column().setTableName("bibite pepsi").setColumnName("marche").setFields(List.of(new String[]{"7up", "pepsi"})));
         IndexHandler indexHandler = new IndexHandler(this.testIndexPath);
         indexHandler.createIndex(columns);
     }
     @Test
     public void test1() throws IOException {
         TableExpander tableExpander = new TableExpander(testIndexPath);
-        tableExpander.searchForColumnExpansion();
+        tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation());
     }
 }
