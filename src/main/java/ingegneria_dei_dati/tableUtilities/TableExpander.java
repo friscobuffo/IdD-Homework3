@@ -11,8 +11,7 @@ import org.apache.lucene.search.*;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TableExpander {
     private final String FIELD = "text";
@@ -21,29 +20,35 @@ public class TableExpander {
     public TableExpander(String indexPath) throws IOException {
         this.indexHandler = new IndexHandler(indexPath);
     }
-    public ExpansionStats searchForColumnExpansion(String query) throws IOException {
-        BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
-        List<String> terms = this.tokenizeString(query);
+    public ExpansionStats searchForColumnExpansion(String query, int minimumMatch) throws IOException {
+        BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder().setMinimumNumberShouldMatch(minimumMatch);
+        Map<String, Integer> termFrequencies = this.tokenizeString(query);
 
-        for(String term : terms){
-            TermQuery termQuery = new TermQuery(new Term(this.FIELD, term));
-            booleanQueryBuilder.add(new BooleanClause(termQuery, BooleanClause.Occur.SHOULD));
+        for(String term : termFrequencies.keySet()){
+            Query baseQuery = new TermQuery(new Term(this.FIELD, term));
+            if(termFrequencies.get(term) > 1){
+                baseQuery = new BoostQuery(baseQuery, termFrequencies.get(term));
+            }
+            booleanQueryBuilder.add(new BooleanClause(baseQuery, BooleanClause.Occur.SHOULD));
         }
         BooleanQuery booleanQuery = booleanQueryBuilder.build();
 
         ExpansionStats expansionStats = this.indexHandler.search(booleanQuery, 10);
-        expansionStats.normalize(terms.size());
+        int termCount = termFrequencies.values().stream().reduce(0, Integer::sum);
+        expansionStats.normalize(termCount);
         return expansionStats;
     }
 
-    private List<String> tokenizeString(String query) throws IOException {
-        List<String> terms = new ArrayList<String>();
+    private Map<String, Integer> tokenizeString(String query) throws IOException {
         try(TokenStream stream  = this.indexHandler.getAnalyzer().tokenStream(this.FIELD, new StringReader(query))) {
             stream.reset();
+            Map<String, Integer> termFrequencies = new HashMap<String, Integer>();
             while (stream.incrementToken()) {
-                terms.add(stream.getAttribute(CharTermAttribute.class).toString());
+                String token = stream.getAttribute(CharTermAttribute.class).toString();
+                int frequency = termFrequencies.getOrDefault(token, 0);
+                termFrequencies.put(token, frequency + 1);
             }
-            return terms;
+            return termFrequencies;
         }
     }
 
@@ -53,7 +58,7 @@ public class TableExpander {
         SamplesHandler samplesHandler = new SamplesHandler();
         List<Column> samples = samplesHandler.readSample();
         for(Column sample : samples.subList(0,2)){
-            System.out.println(tableExpander.searchForColumnExpansion(sample.fieldsStringRepresentation()).toString());
+            System.out.println(tableExpander.searchForColumnExpansion(sample.fieldsStringRepresentation(),1).toString());
         }
     }
 

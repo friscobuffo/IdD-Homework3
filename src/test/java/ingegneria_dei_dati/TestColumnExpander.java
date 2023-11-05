@@ -38,7 +38,7 @@ public class TestColumnExpander {
     public void testMyColumns() throws IOException {
         TableExpander tableExpander = new TableExpander(testIndexPath);
         // auto
-        List<ColumnStats> columnStats = tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation()).getColumnsStats();
+        List<ColumnStats> columnStats = tableExpander.searchForColumnExpansion(columns.get(0).fieldsStringRepresentation(),1).getColumnsStats();
         ColumnStats column0 = columnStats.get(0);
         assertEquals(column0.getTableId(), columns.get(0).getTableName());
         assertEquals(column0.getColumnId(), columns.get(0).getColumnName());
@@ -48,7 +48,8 @@ public class TestColumnExpander {
         assertEquals(column1.getColumnId(), "marche");
         assertEquals(0.5, column1.getColumnScore(), 0.0);
         // bibite
-        columnStats = tableExpander.searchForColumnExpansion(columns.get(4).fieldsStringRepresentation()).getColumnsStats();
+        System.out.println(tableExpander.searchForColumnExpansion(columns.get(4).fieldsStringRepresentation(),1));
+        columnStats = tableExpander.searchForColumnExpansion(columns.get(4).fieldsStringRepresentation(),1).getColumnsStats();
         column0 = columnStats.get(0);
         assertEquals(column0.getTableId(), columns.get(4).getTableName());
         assertEquals(column0.getColumnId(), columns.get(4).getColumnName());
@@ -65,7 +66,7 @@ public class TestColumnExpander {
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
         for(Column column : columns.subList(0,2)){
-            System.out.println(tableExpander.searchForColumnExpansion(column.fieldsStringRepresentation()).toString());
+            System.out.println(tableExpander.searchForColumnExpansion(column.fieldsStringRepresentation(),1).toString());
         }
     }
 }
