@@ -4,10 +4,13 @@ import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.index.IndexHandlerInterface;
 import ingegneria_dei_dati.index.QueryResults;
 import ingegneria_dei_dati.table.Column;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 
 public class TableExpander {
@@ -18,7 +21,7 @@ public class TableExpander {
         this.indexHandler = new IndexHandler(indexPath);
     }
     public QueryResults searchForColumnExpansion(Column column) throws IOException {
-        Map<String, Integer> termFrequencies = getTermFrequencies(column);
+        Map<String, Integer> termFrequencies = getParsedTermFrequencies(column);
         BooleanQuery booleanQuery = buildQuery(termFrequencies);
         QueryResults queryResults = this.indexHandler.search(booleanQuery, 10);
         int termCount = termFrequencies.values().stream().reduce(0, Integer::sum);
@@ -26,13 +29,18 @@ public class TableExpander {
         queryResults.setQueryColumn(column);
         return queryResults;
     }
-    private Map<String, Integer> getTermFrequencies(Column column) {
-        Map<String, Integer> termFrequencies = new HashMap<>();
-        for (String cellValue : column.getFields()) {
-            int frequency = termFrequencies.getOrDefault(cellValue, 0);
-            termFrequencies.put(cellValue, frequency + 1);
+    private Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
+        String columnRepresentation = column.getFieldsStringRepresentation();
+        try(TokenStream stream  = this.indexHandler.getAnalyzer().tokenStream(this.FIELD, new StringReader(columnRepresentation))) {
+            stream.reset();
+            Map<String, Integer> termFrequencies = new HashMap<>();
+            while (stream.incrementToken()) {
+                String token = stream.getAttribute(CharTermAttribute.class).toString();
+                int frequency = termFrequencies.getOrDefault(token, 0);
+                termFrequencies.put(token, frequency + 1);
+            }
+            return termFrequencies;
         }
-        return termFrequencies;
     }
     private BooleanQuery buildQuery(Map<String, Integer> termFrequencies) {
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder().setMinimumNumberShouldMatch(1);

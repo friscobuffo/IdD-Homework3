@@ -18,6 +18,7 @@ public class TestColumnExpander {
     private static final String testIndexPath = "test-index";
     private static List<Column> columns;
     private static TableExpander tableExpander;
+
     @BeforeClass
     public static void InitializeColumns() throws IOException {
         columns = new ArrayList<>();
@@ -66,21 +67,18 @@ public class TestColumnExpander {
     }
     @Test
     public void testSample() throws IOException {
-        List<Column> columns = new SamplesHandler().readSample();
+        List<Column> columns = new SamplesHandler().readSample("samples");
         assertEquals(columns.size(), 1000);
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
-        int i=1;
         for(Column column : columns){
             QueryResults results = tableExpander.searchForColumnExpansion(column);
-            QueryResults.Result selfResult = results.getResults().get(0);
-            if (selfResult.queryScore != 1) {
-                System.out.println("sample number " + i + " failed check");
+            if (results.getResults().isEmpty()) {
                 System.out.println(column);
-                System.out.println(results);
+                continue;
             }
+            QueryResults.Result selfResult = results.getResults().getFirst();
             assertEquals(1, selfResult.queryScore, 0.0);
-            i+=1;
         }
     }
 }

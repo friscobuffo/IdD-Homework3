@@ -39,4 +39,11 @@ public class Column {
         this.fields = fields;
         return this;
     }
+    public String getFieldsStringRepresentation() {
+        StringBuilder fieldsRepresentation = new StringBuilder();
+        for (String field: this.fields) {
+            fieldsRepresentation.append(field).append(" ");
+        }
+        return fieldsRepresentation.toString();
+    }
 }

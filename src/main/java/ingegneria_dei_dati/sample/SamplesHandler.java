@@ -15,8 +15,7 @@ public class SamplesHandler {
     private List<Column> sample;
     private int currentElementIndex;
     private Random random;
-    private final String folderPath = "samples/";
-    private final String samplePath = folderPath + "columnsSamples.json";
+    private final String sampleFileName = "/columnsSamples.json";
 
     public void makeSample(int sampleSize) {
         this.sampleSize = sampleSize;
@@ -36,15 +35,15 @@ public class SamplesHandler {
             }
         }
     }
-    public void saveSample() throws IOException{
-        Files.createDirectories(Paths.get(this.folderPath));
+    public void saveSample(String folderPath) throws IOException{
+        Files.createDirectories(Paths.get(folderPath));
         Gson gson = new Gson();
-        FileWriter writer = new FileWriter(this.samplePath);
+        FileWriter writer = new FileWriter(folderPath+sampleFileName);
         gson.toJson(this.sample, writer);
         writer.close();
     }
-    public List<Column> readSample() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(this.samplePath));
+    public List<Column> readSample(String folderPath) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(folderPath+sampleFileName));
         String line = reader.readLine();
         reader.close();
         Gson gson = new Gson();

@@ -1,5 +1,1 @@
 aggiungere timestamps creazione indice
-
-togliere cartella .idea da git
-
-le query non usano l'analyzer? ci sta (solo se non usiamo englishAnalyzer)

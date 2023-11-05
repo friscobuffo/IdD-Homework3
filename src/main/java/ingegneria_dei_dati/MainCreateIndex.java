@@ -16,6 +16,7 @@ public class MainCreateIndex {
         IndexHandler indexHandler = new IndexHandler(indexPath);
         indexHandler.createIndex(datasetPath, columnsReader);
         Statistics.printStats();
-        Statistics.saveStatsMakeHistograms();
+        String folderPath = "stats/";
+        Statistics.saveStatsMakeHistograms(folderPath);
     }
 }

@@ -67,18 +67,17 @@ public class Statistics {
         System.out.println(Statistics.distinctValuesNumber2columnsQuantity);
     }
 
-    public static void saveStats() {
-        saveBasicStats();
-        saveMapStats(Statistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity");
-        saveMapStats(Statistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity");
-        saveMapStats(Statistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity");
+    public static void saveStats(String folderPath) {
+        saveBasicStats(folderPath);
+        saveMapStats(Statistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity", folderPath);
+        saveMapStats(Statistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity", folderPath);
+        saveMapStats(Statistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity", folderPath);
     }
 
-    private static <A,B> void saveMapStats(Map<A, B> map, String mapName) {
-        String path = "stats/";
+    private static <A,B> void saveMapStats(Map<A, B> map, String mapName, String folderPath) {
         try {
-            Files.createDirectories(Paths.get(path));
-            FileWriter myWriter = new FileWriter(path+mapName+".csv");
+            Files.createDirectories(Paths.get(folderPath));
+            FileWriter myWriter = new FileWriter(folderPath+mapName+".csv");
             for (A key : map.keySet()) {
                 B value = map.get(key);
                 String line = key.toString() + "," + value.toString() + "\n";
@@ -88,11 +87,10 @@ public class Statistics {
         }
         catch (IOException ignored) { }
     }
-    private static void saveBasicStats() {
-        String path = "stats/";
+    private static void saveBasicStats(String folderPath) {
         try {
-            Files.createDirectories(Paths.get(path));
-            FileWriter myWriter = new FileWriter(path+"basicStats.csv");
+            Files.createDirectories(Paths.get(folderPath));
+            FileWriter myWriter = new FileWriter(folderPath+"basicStats.csv");
             String line = "totalTables," + Statistics.totalTables + "\n";
             line += "totalRows," + Statistics.totalRows + "\n";
             line += "totalColumns," + Statistics.totalColumns + "\n";
@@ -102,8 +100,8 @@ public class Statistics {
         }
         catch (IOException ignored) { }
     }
-    public static void saveStatsMakeHistograms() {
-        Statistics.saveStats();
+    public static void saveStatsMakeHistograms(String folderPath) {
+        Statistics.saveStats(folderPath);
         String path = System.getProperty("user.dir") + "/createHistograms.py";
         try {
             Runtime rt = Runtime.getRuntime();

@@ -12,7 +12,7 @@ public class MainExpandColumn {
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
         SamplesHandler samplesHandler = new SamplesHandler();
-        List<Column> samples = samplesHandler.readSample();
+        List<Column> samples = samplesHandler.readSample("samples");
         for(Column sample : samples.subList(0,2)){
             System.out.println(tableExpander.searchForColumnExpansion(sample).toString());
         }

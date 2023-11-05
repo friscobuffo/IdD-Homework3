@@ -67,7 +67,7 @@ public class IndexHandler implements IndexHandlerInterface {
         }
         writer.commit();
         writer.close();
-        samplesHandler.saveSample();
+        samplesHandler.saveSample("samples");
         System.out.println("\nfinished indexing columns\n");
     }
     @Override
