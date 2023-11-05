@@ -2,6 +2,4 @@ aggiungere timestamps creazione indice
 
 togliere cartella .idea da git
 
-cambiare parametri query su tablet expander in modo che prenda una colonna e non una stringa
-
-refactor generale a statistiche delle query
+le query non usano l'analyzer? ci sta (solo se non usiamo englishAnalyzer)

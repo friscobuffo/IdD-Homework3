@@ -16,13 +16,6 @@ public class Column {
         if (this.fields != null) output.append("fields: ").append(this.fields).append("\n");
         return output.toString();
     }
-    public String fieldsStringRepresentation() {
-        StringBuilder fieldsRepresentation = new StringBuilder();
-        for (String field: this.fields) {
-            fieldsRepresentation.append(field).append(" ");
-        }
-        return fieldsRepresentation.toString();
-    }
     public String getTableName() {
         return tableName;
     }
