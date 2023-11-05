@@ -17,6 +17,7 @@ public class Statistics {
     public static Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
     public static Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
     public static Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
+    public static  List<String> customStats = new ArrayList<>();;
 
     public static void processTableStats(Table table) {
         // update of basic counters
@@ -66,14 +67,13 @@ public class Statistics {
         System.out.print("distinctValuesNumber2columnsQuantity -> ");
         System.out.println(Statistics.distinctValuesNumber2columnsQuantity);
     }
-
     public static void saveStats(String folderPath) {
+        folderPath += "/";
         saveBasicStats(folderPath);
         saveMapStats(Statistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity", folderPath);
         saveMapStats(Statistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity", folderPath);
         saveMapStats(Statistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity", folderPath);
     }
-
     private static <A,B> void saveMapStats(Map<A, B> map, String mapName, String folderPath) {
         try {
             Files.createDirectories(Paths.get(folderPath));
@@ -123,5 +123,22 @@ public class Statistics {
                 System.out.println(line);
         }
         catch (Exception ignored) { }
+    }
+    public static void addCustomStat(String statName, double statValue) {
+        customStats.add(statName + "," + statValue);
+    }
+    public static void saveCustomStats(String folderPath, String customStatsName) {
+        try {
+            Files.createDirectories(Paths.get(folderPath));
+            FileWriter myWriter = new FileWriter(folderPath+"/"+customStatsName+".csv");
+            for (String line : customStats)
+                myWriter.write(line+"\n");
+            myWriter.close();
+        }
+        catch (IOException ignored) { }
+    }
+    public static void printCustomStats() {
+        for (String stat : customStats)
+            System.out.println(stat);
     }
 }
