@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class Statistics {
+public class IndexCreationStatistics {
     public static int totalTables = 0;
     public static int totalRows = 0;
     public static int totalColumns = 0;
@@ -21,69 +21,67 @@ public class Statistics {
     public static Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
     public static  List<String> customStats = new ArrayList<>();
 
-    public static void startTimer() {
-        Statistics.startMilliseconds = System.currentTimeMillis();
-    }
-    public static void endTimer() {
-        Statistics.totalTime = (System.currentTimeMillis() - Statistics.startMilliseconds) / 1000.0;
+    public static void finishedIndexing() {
+        IndexCreationStatistics.totalTime = (System.currentTimeMillis() - IndexCreationStatistics.startMilliseconds) / 1000.0;
 
     }
     public static void processTableStats(Table table) {
+        if (totalTables==0) startMilliseconds = System.currentTimeMillis();
         // update of basic counters
-        Statistics.totalTables += 1;
-        Statistics.totalColumns += table.maxDimensions.column;
-        Statistics.totalRows += table.maxDimensions.row;
+        IndexCreationStatistics.totalTables += 1;
+        IndexCreationStatistics.totalColumns += table.maxDimensions.column;
+        IndexCreationStatistics.totalRows += table.maxDimensions.row;
         // update of emptyCells
         for (Cell cell: table.cells) {
-            if (cell.cleanedText==null) Statistics.emptyCells+=1;
-            else if (cell.cleanedText.isBlank()) Statistics.emptyCells += 1;
+            if (cell.cleanedText==null) IndexCreationStatistics.emptyCells+=1;
+            else if (cell.cleanedText.isBlank()) IndexCreationStatistics.emptyCells += 1;
         }
         // update rowsNumber2tablesQuantity
-        if (Statistics.rowsNumber2tablesQuantity.containsKey(table.maxDimensions.row)) {
-            int newValue = Statistics.rowsNumber2tablesQuantity.get(table.maxDimensions.row)+1;
-            Statistics.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
+        if (IndexCreationStatistics.rowsNumber2tablesQuantity.containsKey(table.maxDimensions.row)) {
+            int newValue = IndexCreationStatistics.rowsNumber2tablesQuantity.get(table.maxDimensions.row)+1;
+            IndexCreationStatistics.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
         }
         else rowsNumber2tablesQuantity.put(table.maxDimensions.row, 1);
         // update columnsNumber2tablesQuantity
-        if (Statistics.columnsNumber2tablesQuantity.containsKey(table.maxDimensions.column)) {
-            int newValue = Statistics.columnsNumber2tablesQuantity.get(table.maxDimensions.column)+1;
-            Statistics.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
+        if (IndexCreationStatistics.columnsNumber2tablesQuantity.containsKey(table.maxDimensions.column)) {
+            int newValue = IndexCreationStatistics.columnsNumber2tablesQuantity.get(table.maxDimensions.column)+1;
+            IndexCreationStatistics.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
         }
         else columnsNumber2tablesQuantity.put(table.maxDimensions.column, 1);
         // update distinctValuesNumber2columnsQuantity
         for (Column column: table.columns) {
             int distinctValues = (int) column.getFields().stream().distinct().count();
-            if (Statistics.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
-                int newValue = Statistics.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
-                Statistics.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
+            if (IndexCreationStatistics.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
+                int newValue = IndexCreationStatistics.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
+                IndexCreationStatistics.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
             }
-            else Statistics.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
+            else IndexCreationStatistics.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
         }
     }
     public static void printStats() {
         System.out.print("totalTables -> ");
-        System.out.println(Statistics.totalTables);
+        System.out.println(IndexCreationStatistics.totalTables);
         System.out.print("totalRows -> ");
-        System.out.println(Statistics.totalRows);
+        System.out.println(IndexCreationStatistics.totalRows);
         System.out.print("totalColumns -> ");
-        System.out.println(Statistics.totalColumns);
+        System.out.println(IndexCreationStatistics.totalColumns);
         System.out.print("emptyCells -> ");
-        System.out.println(Statistics.emptyCells);
+        System.out.println(IndexCreationStatistics.emptyCells);
         System.out.print("totalIndexCreationTime -> ");
-        System.out.println(Statistics.totalTime);
+        System.out.println(IndexCreationStatistics.totalTime);
         System.out.print("rowsNumber2tablesQuantity -> ");
-        System.out.println(Statistics.rowsNumber2tablesQuantity);
+        System.out.println(IndexCreationStatistics.rowsNumber2tablesQuantity);
         System.out.print("columnsNumber2tablesQuantity -> ");
-        System.out.println(Statistics.columnsNumber2tablesQuantity);
+        System.out.println(IndexCreationStatistics.columnsNumber2tablesQuantity);
         System.out.print("distinctValuesNumber2columnsQuantity -> ");
-        System.out.println(Statistics.distinctValuesNumber2columnsQuantity);
+        System.out.println(IndexCreationStatistics.distinctValuesNumber2columnsQuantity);
     }
     public static void saveStats(String folderPath) {
         folderPath += "/";
         saveBasicStats(folderPath);
-        saveMapStats(Statistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity", folderPath);
-        saveMapStats(Statistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity", folderPath);
-        saveMapStats(Statistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity", folderPath);
+        saveMapStats(IndexCreationStatistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity", folderPath);
+        saveMapStats(IndexCreationStatistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity", folderPath);
+        saveMapStats(IndexCreationStatistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity", folderPath);
     }
     private static <A,B> void saveMapStats(Map<A, B> map, String mapName, String folderPath) {
         try {
@@ -102,18 +100,18 @@ public class Statistics {
         try {
             Files.createDirectories(Paths.get(folderPath));
             FileWriter myWriter = new FileWriter(folderPath+"basicStats.csv");
-            String line = "totalTables," + Statistics.totalTables + "\n";
-            line += "totalRows," + Statistics.totalRows + "\n";
-            line += "totalColumns," + Statistics.totalColumns + "\n";
-            line += "emptyCells," + Statistics.emptyCells + "\n";
-            line += "totalIndexCreationTime," + Statistics.totalTime + "\n";
+            String line = "totalTables," + IndexCreationStatistics.totalTables + "\n";
+            line += "totalRows," + IndexCreationStatistics.totalRows + "\n";
+            line += "totalColumns," + IndexCreationStatistics.totalColumns + "\n";
+            line += "emptyCells," + IndexCreationStatistics.emptyCells + "\n";
+            line += "totalIndexCreationTime," + IndexCreationStatistics.totalTime + "\n";
             myWriter.write(line);
             myWriter.close();
         }
         catch (IOException ignored) { }
     }
     public static void saveStatsMakeHistograms(String folderPath) {
-        Statistics.saveStats(folderPath);
+        IndexCreationStatistics.saveStats(folderPath);
         String path = System.getProperty("user.dir") + "/createHistograms.py";
         try {
             Runtime rt = Runtime.getRuntime();

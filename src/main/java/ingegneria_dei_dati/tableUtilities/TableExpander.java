@@ -3,6 +3,7 @@ package ingegneria_dei_dati.tableUtilities;
 import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.index.IndexHandlerInterface;
 import ingegneria_dei_dati.index.QueryResults;
+import ingegneria_dei_dati.statistics.TableExpansionStatistics;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -29,7 +30,7 @@ public class TableExpander {
         queryResults.setQueryColumn(column);
         return queryResults;
     }
-    private Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
+    public Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
         String columnRepresentation = column.getFieldsStringRepresentation();
         try(TokenStream stream  = this.indexHandler.getAnalyzer().tokenStream(this.FIELD, new StringReader(columnRepresentation))) {
             stream.reset();

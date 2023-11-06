@@ -2,11 +2,9 @@ package ingegneria_dei_dati.index;
 
 import ingegneria_dei_dati.reader.ColumnsReader;
 import ingegneria_dei_dati.sample.SamplesHandler;
-import ingegneria_dei_dati.statistics.Statistics;
+import ingegneria_dei_dati.statistics.IndexCreationStatistics;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.classic.ClassicFilterFactory;
-import org.apache.lucene.analysis.commongrams.CommonGramsFilterFactory;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
@@ -14,7 +12,6 @@ import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.wikipedia.WikipediaTokenizerFactory;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -41,15 +38,23 @@ public class IndexHandler implements IndexHandlerInterface {
     private String lastTableName;
 
     public IndexHandler(String path) throws IOException {
+        this(path, true);
+    }
+    public IndexHandler(String path, boolean useCustomAnalyzer) throws IOException {
         Path path_ = Paths.get(path);
         this.directory = FSDirectory.open(path_);
-        this.analyzer = CustomAnalyzer.builder()
-                        .withTokenizer(WhitespaceTokenizerFactory.class)
-                        .addTokenFilter(LowerCaseFilterFactory.class)
-                        .addTokenFilter(WordDelimiterGraphFilterFactory.class)
-                        .addTokenFilter(PorterStemFilterFactory.class)
-                        .addTokenFilter(StopFilterFactory.class)
-                        .build();
+        if (useCustomAnalyzer) {
+            this.analyzer = CustomAnalyzer.builder()
+                    .withTokenizer(WhitespaceTokenizerFactory.class)
+                    .addTokenFilter(LowerCaseFilterFactory.class)
+                    .addTokenFilter(WordDelimiterGraphFilterFactory.class)
+                    .addTokenFilter(StopFilterFactory.class)
+                    .addTokenFilter(PorterStemFilterFactory.class)
+                    .build();
+        }
+        else {
+            this.analyzer = new StandardAnalyzer();
+        }
     }
     private void add2Index(Column column, IndexWriter writer) throws IOException {
         String tableId = column.getTableName();
@@ -67,7 +72,6 @@ public class IndexHandler implements IndexHandlerInterface {
     @Override
     public void createIndex(String datasetPath, ColumnsReader columnsReader) throws IOException {
         this.indexedTables = 0;
-        Statistics.startTimer();
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
@@ -79,12 +83,11 @@ public class IndexHandler implements IndexHandlerInterface {
             Column column = columnsReader.readNextColumn();
             samplesHandler.addToSampleProbabilistic(column);
             this.add2Index(column, writer);
-            //if(i%10000 == 0) writer.commit();
             this.prints(i, column.getTableName());
         }
         writer.commit();
         writer.close();
-        Statistics.endTimer();
+        IndexCreationStatistics.finishedIndexing();
         samplesHandler.saveSample("samples");
         System.out.println("\nfinished indexing columns\n");
     }
