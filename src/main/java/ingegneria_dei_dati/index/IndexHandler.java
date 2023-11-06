@@ -2,6 +2,7 @@ package ingegneria_dei_dati.index;
 
 import ingegneria_dei_dati.reader.ColumnsReader;
 import ingegneria_dei_dati.sample.SamplesHandler;
+import ingegneria_dei_dati.statistics.Statistics;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -51,6 +52,7 @@ public class IndexHandler implements IndexHandlerInterface {
     @Override
     public void createIndex(String datasetPath, ColumnsReader columnsReader) throws IOException {
         this.indexedTables = 0;
+        Statistics.startTimer();
         IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
@@ -67,6 +69,7 @@ public class IndexHandler implements IndexHandlerInterface {
         }
         writer.commit();
         writer.close();
+        Statistics.endTimer();
         samplesHandler.saveSample("samples");
         System.out.println("\nfinished indexing columns\n");
     }
