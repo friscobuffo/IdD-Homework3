@@ -4,7 +4,16 @@ import ingegneria_dei_dati.reader.ColumnsReader;
 import ingegneria_dei_dati.sample.SamplesHandler;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.classic.ClassicFilterFactory;
+import org.apache.lucene.analysis.commongrams.CommonGramsFilterFactory;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.StopFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.PorterStemFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.wikipedia.WikipediaTokenizerFactory;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -33,7 +42,13 @@ public class IndexHandler implements IndexHandlerInterface {
     public IndexHandler(String path) throws IOException {
         Path path_ = Paths.get(path);
         this.directory = FSDirectory.open(path_);
-        this.analyzer = new StandardAnalyzer();
+        this.analyzer = CustomAnalyzer.builder()
+                        .withTokenizer(WhitespaceTokenizerFactory.class)
+                        .addTokenFilter(LowerCaseFilterFactory.class)
+                        .addTokenFilter(WordDelimiterGraphFilterFactory.class)
+                        .addTokenFilter(PorterStemFilterFactory.class)
+                        .addTokenFilter(StopFilterFactory.class)
+                        .build();
     }
     private void add2Index(Column column, IndexWriter writer) throws IOException {
         String tableId = column.getTableName();
@@ -62,7 +77,7 @@ public class IndexHandler implements IndexHandlerInterface {
             Column column = columnsReader.readNextColumn();
             samplesHandler.addToSampleProbabilistic(column);
             this.add2Index(column, writer);
-            if(i%1000 == 0) writer.commit();
+            //if(i%10000 == 0) writer.commit();
             this.prints(i, column.getTableName());
         }
         writer.commit();
