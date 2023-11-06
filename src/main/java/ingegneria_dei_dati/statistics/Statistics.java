@@ -14,11 +14,20 @@ public class Statistics {
     public static int totalRows = 0;
     public static int totalColumns = 0;
     public static int emptyCells = 0;
+    public static long startMilliseconds;
+    public static double totalTime;
     public static Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
     public static Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
     public static Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
-    public static  List<String> customStats = new ArrayList<>();;
+    public static  List<String> customStats = new ArrayList<>();
 
+    public static void startTimer() {
+        Statistics.startMilliseconds = System.currentTimeMillis();
+    }
+    public static void endTimer() {
+        Statistics.totalTime = (System.currentTimeMillis() - Statistics.startMilliseconds) / 1000.0;
+
+    }
     public static void processTableStats(Table table) {
         // update of basic counters
         Statistics.totalTables += 1;
@@ -60,6 +69,8 @@ public class Statistics {
         System.out.println(Statistics.totalColumns);
         System.out.print("emptyCells -> ");
         System.out.println(Statistics.emptyCells);
+        System.out.print("totalIndexCreationTime -> ");
+        System.out.println(Statistics.totalTime);
         System.out.print("rowsNumber2tablesQuantity -> ");
         System.out.println(Statistics.rowsNumber2tablesQuantity);
         System.out.print("columnsNumber2tablesQuantity -> ");
@@ -95,6 +106,7 @@ public class Statistics {
             line += "totalRows," + Statistics.totalRows + "\n";
             line += "totalColumns," + Statistics.totalColumns + "\n";
             line += "emptyCells," + Statistics.emptyCells + "\n";
+            line += "totalIndexCreationTime," + Statistics.totalTime + "\n";
             myWriter.write(line);
             myWriter.close();
         }
