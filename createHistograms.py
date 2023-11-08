@@ -45,7 +45,7 @@ plt.clf()
 # x = np.array([key for key in percentageRepeatedValues2columnsQuantity for _ in range(percentageRepeatedValues2columnsQuantity[key])])
 keys = list(percentageRepeatedValues2columnsQuantity)
 myKeys = [0, 20, 40, 60, 80, 100]
-labels = ["0", ">0  \n≤20", ">20\n≤40", ">40\n≤60", ">60\n≤80", "≤80"]
+labels = ["0", ">0  \n≤20", ">20\n≤40", ">40\n≤60", ">60\n≤80", ">80"]
 myValues = []
 for k in myKeys:
 	myValue = 0
