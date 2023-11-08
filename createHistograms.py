@@ -14,12 +14,24 @@ def openDict(path):
 		file.close()
 		return dictionary
 
+def openDictFloat(path):
+	dictionary = dict()
+	with open(path) as file:
+		reader = csv.reader(file)
+		for line in reader:
+			if line == []: continue
+			key, value = float(line[0]), int(line[1])
+			dictionary[key] = value
+		file.close()
+		return dictionary
+
 folderAbsolutePath = str(__file__).removesuffix("createHistograms.py")
 statsFolderAbsolutePath = folderAbsolutePath + "stats/"
 
 columnsNumber2tablesQuantity = openDict(statsFolderAbsolutePath + 'columnsNumber2tablesQuantity.csv')
 rowsNumber2tablesQuantity = openDict(statsFolderAbsolutePath + 'rowsNumber2tablesQuantity.csv')
 distinctValuesNumber2columnsQuantity = openDict(statsFolderAbsolutePath + 'distinctValuesNumber2columnsQuantity.csv')
+percentageRepeatedValues2columnsQuantity = openDictFloat(statsFolderAbsolutePath + 'percentageRepeatedValues2columnsQuantity.csv')
 
 histogramsFolderAbsolutePath = folderAbsolutePath + "histograms/"
 if not os.path.exists(histogramsFolderAbsolutePath):
@@ -28,6 +40,26 @@ if not os.path.exists(histogramsFolderAbsolutePath):
 x = np.array([key for key in columnsNumber2tablesQuantity for _ in range(columnsNumber2tablesQuantity[key])])
 plt.hist(x, 22, (1,22))
 plt.savefig(histogramsFolderAbsolutePath + "columnsNumber2tablesQuantity.jpg")
+plt.clf()
+
+# x = np.array([key for key in percentageRepeatedValues2columnsQuantity for _ in range(percentageRepeatedValues2columnsQuantity[key])])
+keys = list(percentageRepeatedValues2columnsQuantity)
+myKeys = [0, 20, 40, 60, 80, 100]
+labels = ["0", ">0  \n≤20", ">20\n≤40", ">40\n≤60", ">60\n≤80", "≤80"]
+myValues = []
+for k in myKeys:
+	myValue = 0
+	for k2 in keys:
+		if k2<=k:
+			keys.remove(k2)
+			myValue += percentageRepeatedValues2columnsQuantity.get(k2)
+	myValues.append(myValue)
+tot = sum(myValues)
+
+values = [v/tot for v in myValues]
+plt.pie(values, labels=labels)
+# plt.hist(x, 20, (0,100))
+plt.savefig(histogramsFolderAbsolutePath + "percentageRepeatedValues2columnsQuantity.jpg")
 plt.clf()
 
 x = np.array([key for key in rowsNumber2tablesQuantity for _ in range(rowsNumber2tablesQuantity[key])])

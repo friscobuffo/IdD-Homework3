@@ -19,11 +19,10 @@ public class IndexCreationStatistics {
     public static Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
     public static Map<Integer, Integer> columnsNumber2tablesQuantity = new HashMap<>();
     public static Map<Integer, Integer> distinctValuesNumber2columnsQuantity = new HashMap<>();
-    public static  List<String> customStats = new ArrayList<>();
+    public static Map<Float, Integer> percentageRepeatedValues2columnsQuantity = new HashMap<>();
 
     public static void finishedIndexing() {
         IndexCreationStatistics.totalTime = (System.currentTimeMillis() - IndexCreationStatistics.startMilliseconds) / 1000.0;
-
     }
     public static void processTableStats(Table table) {
         if (totalTables==0) startMilliseconds = System.currentTimeMillis();
@@ -31,31 +30,29 @@ public class IndexCreationStatistics {
         IndexCreationStatistics.totalTables += 1;
         IndexCreationStatistics.totalColumns += table.maxDimensions.column;
         IndexCreationStatistics.totalRows += table.maxDimensions.row;
+        int newValue;
         // update of emptyCells
         for (Cell cell: table.cells) {
-            if (cell.cleanedText==null) IndexCreationStatistics.emptyCells+=1;
+            if (cell.cleanedText==null) IndexCreationStatistics.emptyCells += 1;
             else if (cell.cleanedText.isBlank()) IndexCreationStatistics.emptyCells += 1;
         }
         // update rowsNumber2tablesQuantity
-        if (IndexCreationStatistics.rowsNumber2tablesQuantity.containsKey(table.maxDimensions.row)) {
-            int newValue = IndexCreationStatistics.rowsNumber2tablesQuantity.get(table.maxDimensions.row)+1;
-            IndexCreationStatistics.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
-        }
-        else rowsNumber2tablesQuantity.put(table.maxDimensions.row, 1);
+        newValue = IndexCreationStatistics.rowsNumber2tablesQuantity.getOrDefault(table.maxDimensions.row, 0)+1;
+        IndexCreationStatistics.rowsNumber2tablesQuantity.put(table.maxDimensions.row, newValue);
         // update columnsNumber2tablesQuantity
-        if (IndexCreationStatistics.columnsNumber2tablesQuantity.containsKey(table.maxDimensions.column)) {
-            int newValue = IndexCreationStatistics.columnsNumber2tablesQuantity.get(table.maxDimensions.column)+1;
-            IndexCreationStatistics.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
-        }
-        else columnsNumber2tablesQuantity.put(table.maxDimensions.column, 1);
-        // update distinctValuesNumber2columnsQuantity
+        newValue = IndexCreationStatistics.columnsNumber2tablesQuantity.getOrDefault(table.maxDimensions.column, 0)+1;
+        IndexCreationStatistics.columnsNumber2tablesQuantity.put(table.maxDimensions.column, newValue);
+        // update distinctValuesNumber2columnsQuantity and percentageRepeatedValues2columnsQuantity
         for (Column column: table.columns) {
             int distinctValues = (int) column.getFields().stream().distinct().count();
-            if (IndexCreationStatistics.distinctValuesNumber2columnsQuantity.containsKey(distinctValues)) {
-                int newValue = IndexCreationStatistics.distinctValuesNumber2columnsQuantity.get(distinctValues)+1;
-                IndexCreationStatistics.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
-            }
-            else IndexCreationStatistics.distinctValuesNumber2columnsQuantity.put(distinctValues, 1);
+            // distinctValuesNumber2columnsQuantity
+            newValue = IndexCreationStatistics.distinctValuesNumber2columnsQuantity.getOrDefault(distinctValues,0)+1;
+            IndexCreationStatistics.distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
+            // percentageRepeatedValues2columnsQuantity
+            float percentageRepeatedValues = 100*(column.getFields().size() - distinctValues) / (float)column.getFields().size();
+            percentageRepeatedValues = Math.round(10*percentageRepeatedValues) / (float)10;
+            newValue = percentageRepeatedValues2columnsQuantity.getOrDefault(percentageRepeatedValues, 0)+1;
+            percentageRepeatedValues2columnsQuantity.put(percentageRepeatedValues, newValue);
         }
     }
     public static void printStats() {
@@ -75,6 +72,9 @@ public class IndexCreationStatistics {
         System.out.println(IndexCreationStatistics.columnsNumber2tablesQuantity);
         System.out.print("distinctValuesNumber2columnsQuantity -> ");
         System.out.println(IndexCreationStatistics.distinctValuesNumber2columnsQuantity);
+        System.out.print("percentageRepeatedValues2columnsQuantity -> ");
+        System.out.println(IndexCreationStatistics.percentageRepeatedValues2columnsQuantity);
+
     }
     public static void saveStats(String folderPath) {
         folderPath += "/";
@@ -82,6 +82,7 @@ public class IndexCreationStatistics {
         saveMapStats(IndexCreationStatistics.rowsNumber2tablesQuantity, "rowsNumber2tablesQuantity", folderPath);
         saveMapStats(IndexCreationStatistics.columnsNumber2tablesQuantity, "columnsNumber2tablesQuantity", folderPath);
         saveMapStats(IndexCreationStatistics.distinctValuesNumber2columnsQuantity, "distinctValuesNumber2columnsQuantity", folderPath);
+        saveMapStats(IndexCreationStatistics.percentageRepeatedValues2columnsQuantity, "percentageRepeatedValues2columnsQuantity", folderPath);
     }
     private static <A,B> void saveMapStats(Map<A, B> map, String mapName, String folderPath) {
         try {
@@ -127,28 +128,11 @@ public class IndexCreationStatistics {
             BufferedReader error = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
 
             String line;
-            while((line=input.readLine()) != null)
+            while ((line = input.readLine()) != null)
                 System.out.println(line);
-            while((line=error.readLine()) != null)
+            while ((line = error.readLine()) != null)
                 System.out.println(line);
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored) { }
-    }
-    public static void addCustomStat(String statName, double statValue) {
-        customStats.add(statName + "," + statValue);
-    }
-    public static void saveCustomStats(String folderPath, String customStatsName) {
-        try {
-            Files.createDirectories(Paths.get(folderPath));
-            FileWriter myWriter = new FileWriter(folderPath+"/"+customStatsName+".csv");
-            for (String line : customStats)
-                myWriter.write(line+"\n");
-            myWriter.close();
-        }
-        catch (IOException ignored) { }
-    }
-    public static void printCustomStats() {
-        for (String stat : customStats)
-            System.out.println(stat);
     }
 }
