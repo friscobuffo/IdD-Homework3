@@ -31,6 +31,7 @@ statsFolderAbsolutePath = folderAbsolutePath + "stats/"
 columnsNumber2tablesQuantity = openDict(statsFolderAbsolutePath + 'columnsNumber2tablesQuantity.csv')
 rowsNumber2tablesQuantity = openDict(statsFolderAbsolutePath + 'rowsNumber2tablesQuantity.csv')
 distinctValuesNumber2columnsQuantity = openDict(statsFolderAbsolutePath + 'distinctValuesNumber2columnsQuantity.csv')
+tokensNumber2cellsQuantity = openDict(statsFolderAbsolutePath + 'tokensNumber2cellsQuantity.csv')
 percentageRepeatedValues2columnsQuantity = openDictFloat(statsFolderAbsolutePath + 'percentageRepeatedValues2columnsQuantity.csv')
 
 histogramsFolderAbsolutePath = folderAbsolutePath + "histograms/"
@@ -42,7 +43,6 @@ plt.hist(x, 22, (1,22))
 plt.savefig(histogramsFolderAbsolutePath + "columnsNumber2tablesQuantity.jpg")
 plt.clf()
 
-# x = np.array([key for key in percentageRepeatedValues2columnsQuantity for _ in range(percentageRepeatedValues2columnsQuantity[key])])
 keys = list(percentageRepeatedValues2columnsQuantity)
 myKeys = [0, 20, 40, 60, 80, 100]
 labels = ["0", ">0  \n≤20", ">20\n≤40", ">40\n≤60", ">60\n≤80", ">80"]
@@ -58,7 +58,6 @@ tot = sum(myValues)
 
 values = [v/tot for v in myValues]
 plt.pie(values, labels=labels)
-# plt.hist(x, 20, (0,100))
 plt.savefig(histogramsFolderAbsolutePath + "percentageRepeatedValues2columnsQuantity.jpg")
 plt.clf()
 
@@ -71,4 +70,10 @@ x = np.array([key for key in distinctValuesNumber2columnsQuantity for _ in range
 plt.hist(x, 60, (1,60))
 plt.savefig(histogramsFolderAbsolutePath + "distinctValuesNumber2columnsQuantity.jpg")
 plt.clf()
+
+x = np.array([key for key in tokensNumber2cellsQuantity for _ in range(tokensNumber2cellsQuantity[key])])
+plt.hist(x, 60, (1,60))
+plt.savefig(histogramsFolderAbsolutePath + "tokensNumber2cellsQuantity.jpg")
+plt.clf()
+
 plt.close()

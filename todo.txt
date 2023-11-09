@@ -1,1 +1,3 @@
-aggiungere baseline intersection similarity due colonne random
+fare con 10 campioni di dimensione 1000
+aggiungere test con colonne vuote e come si comporta
+aggiungere test che controlla che il migliore result in assoluto dell'espansione sia la colonna stessa (forse da fare)
