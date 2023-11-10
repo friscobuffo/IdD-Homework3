@@ -14,7 +14,10 @@ public class IndexCreationStatistics {
     public static int totalRows = 0;
     public static int totalColumns = 0;
     public static int emptyCells = 0;
+    public static int totalTokens = 0;
+    public static int totalDistinctValuesInColumns = 0;
     public static int totalCells = 0;
+    public static double totalPercentageRepeatedValuesInColumns = 0.0;
     public static long startMilliseconds;
     public static double totalTime;
     public static Map<Integer, Integer> rowsNumber2tablesQuantity = new HashMap<>();
@@ -43,6 +46,7 @@ public class IndexCreationStatistics {
             else if (cell.cleanedText.isBlank()) emptyCells += 1;
             // update of tokensNumber2cellsQuantity
             int tokensNumber = List.of(cell.cleanedText.split(" ")).size();
+            totalTokens += tokensNumber;
             newValue = tokensNumber2cellsQuantity.getOrDefault(tokensNumber, 0)+1;
             tokensNumber2cellsQuantity.put(tokensNumber, newValue);
         }
@@ -55,41 +59,33 @@ public class IndexCreationStatistics {
         // update distinctValuesNumber2columnsQuantity and percentageRepeatedValues2columnsQuantity
         for (Column column: table.columns) {
             int distinctValues = (int) column.getFields().stream().distinct().count();
+            totalDistinctValuesInColumns += distinctValues;
             // distinctValuesNumber2columnsQuantity
             newValue = distinctValuesNumber2columnsQuantity.getOrDefault(distinctValues,0)+1;
             distinctValuesNumber2columnsQuantity.put(distinctValues, newValue);
             // percentageRepeatedValues2columnsQuantity
             float percentageRepeatedValues = 100*(column.getFields().size() - distinctValues) / (float)column.getFields().size();
+            totalPercentageRepeatedValuesInColumns += percentageRepeatedValues;
             percentageRepeatedValues = Math.round(10*percentageRepeatedValues) / (float)10;
             newValue = percentageRepeatedValues2columnsQuantity.getOrDefault(percentageRepeatedValues, 0)+1;
             percentageRepeatedValues2columnsQuantity.put(percentageRepeatedValues, newValue);
         }
     }
     public static void printStats() {
-        System.out.print("totalTime ->");
-        System.out.println(totalTime);
-        System.out.print("totalTables -> ");
-        System.out.println(totalTables);
-        System.out.print("totalRows -> ");
-        System.out.println(totalRows);
-        System.out.print("totalColumns -> ");
-        System.out.println(totalColumns);
-        System.out.print("totalCells -> ");
-        System.out.println(totalCells);
-        System.out.print("emptyCells -> ");
-        System.out.println(emptyCells);
-        System.out.print("totalIndexCreationTime -> ");
-        System.out.println(totalTime);
-        System.out.print("rowsNumber2tablesQuantity -> ");
-        System.out.println(rowsNumber2tablesQuantity);
-        System.out.print("columnsNumber2tablesQuantity -> ");
-        System.out.println(columnsNumber2tablesQuantity);
-        System.out.print("distinctValuesNumber2columnsQuantity -> ");
-        System.out.println(distinctValuesNumber2columnsQuantity);
-        System.out.print("percentageRepeatedValues2columnsQuantity -> ");
-        System.out.println(percentageRepeatedValues2columnsQuantity);
-        System.out.print("tokensNumber2cellsQuantity -> ");
-        System.out.println(tokensNumber2cellsQuantity);
+        System.out.println("totalTables -> " + totalTables + "\n" +
+                "totalRows -> " + totalRows + "\n" +
+                "totalColumns -> " + totalColumns + "\n" +
+                "totalCells -> " + totalCells + "\n" +
+                "totalTokens -> " + totalTokens + "\n" +
+                "emptyCells -> " + emptyCells + "\n" +
+                "totalPercentageRepeatedValuesInColumns -> " + totalPercentageRepeatedValuesInColumns  + "\n" +
+                "totalIndexCreationTime -> " + totalTime + "\n" +
+                "totalDistinctValuesInColumns -> " + totalDistinctValuesInColumns + "\n" +
+                "rowsNumber2tablesQuantity -> " + rowsNumber2tablesQuantity + "\n" +
+                "columnsNumber2tablesQuantity -> " + columnsNumber2tablesQuantity + "\n" +
+                "distinctValuesNumber2columnsQuantity -> " + distinctValuesNumber2columnsQuantity + "\n" +
+                "percentageRepeatedValues2columnsQuantity -> " + percentageRepeatedValues2columnsQuantity  + "\n" +
+                "tokensNumber2cellsQuantity -> " + tokensNumber2cellsQuantity);
     }
     public static void saveStats(String folderPath) {
         folderPath += "/";
@@ -117,12 +113,15 @@ public class IndexCreationStatistics {
         try {
             Files.createDirectories(Paths.get(folderPath));
             FileWriter myWriter = new FileWriter(folderPath+"basicStats.csv");
-            String line = "totalTables," + totalTables + "\n";
-            line += "totalRows," + totalRows + "\n";
-            line += "totalColumns," + totalColumns + "\n";
-            line += "emptyCells," + emptyCells + "\n";
-            line += "totalIndexCreationTime," + totalTime + "\n";
-            line += "totalCells," + totalCells + "\n";
+            String line = "totalTables," + totalTables + "\n" +
+                    "totalRows," + totalRows + "\n" +
+                    "totalColumns," + totalColumns + "\n" +
+                    "emptyCells," + emptyCells + "\n" +
+                    "totalIndexCreationTime," + totalTime + "\n" +
+                    "totalCells," + totalCells + "\n" +
+                    "totalTokens," + totalTokens + "\n" +
+                    "totalPercentageRepeatedValuesInColumns" + totalPercentageRepeatedValuesInColumns + "\n" +
+                    "totalDistinctValuesInColumns," + totalDistinctValuesInColumns + "\n";
             myWriter.write(line);
             myWriter.close();
         }

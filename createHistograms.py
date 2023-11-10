@@ -43,6 +43,33 @@ plt.hist(x, 22, (1,22))
 plt.savefig(histogramsFolderAbsolutePath + "columnsNumber2tablesQuantity.jpg")
 plt.clf()
 
+x = np.array([key for key in rowsNumber2tablesQuantity for _ in range(rowsNumber2tablesQuantity[key])])
+plt.hist(x, 80, (1,80))
+plt.savefig(histogramsFolderAbsolutePath + "rowsNumber2tablesQuantity.jpg")
+plt.clf()
+
+x = np.array([key for key in distinctValuesNumber2columnsQuantity for _ in range(distinctValuesNumber2columnsQuantity[key])])
+plt.hist(x, 60, (1,60))
+plt.savefig(histogramsFolderAbsolutePath + "distinctValuesNumber2columnsQuantity.jpg")
+plt.clf()
+
+collapse = 7
+newTokensNumber2cellsQuantity = dict()
+for key in tokensNumber2cellsQuantity:
+	if key>=collapse:
+		value = newTokensNumber2cellsQuantity.get(str(collapse)+"+")
+		if value==None:	value=0
+		newTokensNumber2cellsQuantity[str(collapse)+"+"] = tokensNumber2cellsQuantity[key] + value
+	else:
+		newTokensNumber2cellsQuantity[key] = tokensNumber2cellsQuantity[key]
+keys = list(newTokensNumber2cellsQuantity)
+values = [newTokensNumber2cellsQuantity[key] for key in keys]
+tot = sum(values)
+values = [v/tot for v in values]
+plt.pie(values, labels=keys)
+plt.savefig(histogramsFolderAbsolutePath + "tokensNumber2cellsQuantity.jpg")
+plt.clf()
+
 keys = list(percentageRepeatedValues2columnsQuantity)
 myKeys = [0, 20, 40, 60, 80, 100]
 labels = ["0", ">0  \n≤20", ">20\n≤40", ">40\n≤60", ">60\n≤80", ">80"]
@@ -55,25 +82,9 @@ for k in myKeys:
 			myValue += percentageRepeatedValues2columnsQuantity.get(k2)
 	myValues.append(myValue)
 tot = sum(myValues)
-
 values = [v/tot for v in myValues]
 plt.pie(values, labels=labels)
 plt.savefig(histogramsFolderAbsolutePath + "percentageRepeatedValues2columnsQuantity.jpg")
-plt.clf()
-
-x = np.array([key for key in rowsNumber2tablesQuantity for _ in range(rowsNumber2tablesQuantity[key])])
-plt.hist(x, 80, (1,80))
-plt.savefig(histogramsFolderAbsolutePath + "rowsNumber2tablesQuantity.jpg")
-plt.clf()
-
-x = np.array([key for key in distinctValuesNumber2columnsQuantity for _ in range(distinctValuesNumber2columnsQuantity[key])])
-plt.hist(x, 60, (1,60))
-plt.savefig(histogramsFolderAbsolutePath + "distinctValuesNumber2columnsQuantity.jpg")
-plt.clf()
-
-x = np.array([key for key in tokensNumber2cellsQuantity for _ in range(tokensNumber2cellsQuantity[key])])
-plt.hist(x, 60, (1,60))
-plt.savefig(histogramsFolderAbsolutePath + "tokensNumber2cellsQuantity.jpg")
 plt.clf()
 
 plt.close()
