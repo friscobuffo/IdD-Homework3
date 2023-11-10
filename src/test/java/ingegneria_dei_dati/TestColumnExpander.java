@@ -64,11 +64,12 @@ public class TestColumnExpander {
         assertEquals(bestResult.tableName, "bibite cocacola");
         assertEquals(bestResult.columnName, "marche");
         assertEquals(0.66, bestResult.queryScore, 0.01);
+        System.out.println(bestResult.columnName + " " + bestResult.tableName + " ");
     }
     @Test
     public void testSample() throws IOException {
         List<Column> columns = new SamplesHandler().readSample("samples");
-        assertEquals(columns.size(), 1000);
+        assertEquals(columns.size(), 10000);
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
         for(Column column : columns){

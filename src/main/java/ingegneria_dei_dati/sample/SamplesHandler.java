@@ -63,6 +63,6 @@ public class SamplesHandler {
         int startIndex = desiredSampleSize*(desiredSamplesNumber-1);
         int endIndex = startIndex + lastSampleSize;
         dividedSamples.add(sample.subList(startIndex, endIndex));
-        return  dividedSamples;
+        return dividedSamples;
     }
 }
