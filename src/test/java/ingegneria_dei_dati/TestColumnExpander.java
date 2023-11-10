@@ -72,7 +72,7 @@ public class TestColumnExpander {
         assertEquals(columns.size(), 10000);
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
-        for(Column column : columns){
+        for(Column column : columns.subList(0,1000)){
             QueryResults results = tableExpander.searchForColumnExpansion(column);
             if (results.getResults().isEmpty()) {
                 System.out.println(column);

@@ -84,8 +84,8 @@ public class IndexHandler implements IndexHandlerInterface {
         while (columnsReader.hasNextColumn()) {
             i += 1;
             Column column = columnsReader.readNextColumn();
-            this.parseColumn(column);
             samplesHandler.addToSampleProbabilistic(column);
+            this.parseColumn(column);
             this.add2Index(column, writer);
             this.prints(i, column.getTableName());
         }
@@ -96,7 +96,8 @@ public class IndexHandler implements IndexHandlerInterface {
         System.out.println("\nfinished indexing columns\n");
     }
 
-    private void parseColumn(Column column) throws IOException {
+    @Override
+    public void parseColumn(Column column) throws IOException {
         List<String> parsedFields = new ArrayList<>();
 
         for(String cell : column.getFields()){

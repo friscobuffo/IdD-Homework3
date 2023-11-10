@@ -30,17 +30,15 @@ public class TableExpander {
         return queryResults;
     }
     public Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
-        String columnRepresentation = column.getFieldsStringRepresentation();
-        try(TokenStream stream  = this.indexHandler.getAnalyzer().tokenStream(this.FIELD, new StringReader(columnRepresentation))) {
-            stream.reset();
-            Map<String, Integer> termFrequencies = new HashMap<>();
-            while (stream.incrementToken()) {
-                String token = stream.getAttribute(CharTermAttribute.class).toString();
-                int frequency = termFrequencies.getOrDefault(token, 0);
-                termFrequencies.put(token, frequency + 1);
-            }
-            return termFrequencies;
+        this.indexHandler.parseColumn(column);
+        Map<String, Integer> termFrequencies = new HashMap<>();
+
+        for(String cell : column.getFields()){
+            int frequency = termFrequencies.getOrDefault(cell, 0);
+            termFrequencies.put(cell, frequency + 1);
         }
+
+        return termFrequencies;
     }
     private BooleanQuery buildQuery(Map<String, Integer> termFrequencies) {
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder().setMinimumNumberShouldMatch(1);
