@@ -5,6 +5,7 @@ import ingegneria_dei_dati.sample.SamplesHandler;
 import ingegneria_dei_dati.statistics.IndexCreationStatistics;
 import ingegneria_dei_dati.table.Column;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
@@ -12,6 +13,7 @@ import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -29,6 +31,7 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IndexHandler implements IndexHandlerInterface {
@@ -72,7 +75,7 @@ public class IndexHandler implements IndexHandlerInterface {
     @Override
     public void createIndex(String datasetPath, ColumnsReader columnsReader) throws IOException {
         this.indexedTables = 0;
-        IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
+        IndexWriterConfig config = new IndexWriterConfig();
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
         SamplesHandler samplesHandler = new SamplesHandler();
@@ -81,6 +84,7 @@ public class IndexHandler implements IndexHandlerInterface {
         while (columnsReader.hasNextColumn()) {
             i += 1;
             Column column = columnsReader.readNextColumn();
+            this.parseColumn(columnsReader.readNextColumn());
             samplesHandler.addToSampleProbabilistic(column);
             this.add2Index(column, writer);
             this.prints(i, column.getTableName());
@@ -91,6 +95,24 @@ public class IndexHandler implements IndexHandlerInterface {
         samplesHandler.saveSample("samples");
         System.out.println("\nfinished indexing columns\n");
     }
+
+    private void parseColumn(Column column) throws IOException {
+        List<String> parsedFields = new ArrayList<>();
+
+        for(String cell : column.getFields()){
+            try(TokenStream stream = this.getAnalyzer().tokenStream("text", cell)) {
+                stream.reset();
+                StringBuilder stringBuilder = new StringBuilder();
+                while (stream.incrementToken()) {
+                    stringBuilder.append(stream.getAttribute(CharTermAttribute.class).toString());
+                }
+                parsedFields.add(stringBuilder.toString());
+            }
+        }
+
+        column.setFields(parsedFields);
+    }
+
     @Override
     @SuppressWarnings(value = "deprecation")
     public QueryResults search(Query query, int maxHits) throws IOException {
@@ -131,4 +153,8 @@ public class IndexHandler implements IndexHandlerInterface {
         writer.close();
         System.out.println("\nfinished indexing columns\n");
     }
+
+
+
+
 }
