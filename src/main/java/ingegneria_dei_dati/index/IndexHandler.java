@@ -84,7 +84,7 @@ public class IndexHandler implements IndexHandlerInterface {
         while (columnsReader.hasNextColumn()) {
             i += 1;
             Column column = columnsReader.readNextColumn();
-            this.parseColumn(columnsReader.readNextColumn());
+            this.parseColumn(column);
             samplesHandler.addToSampleProbabilistic(column);
             this.add2Index(column, writer);
             this.prints(i, column.getTableName());
