@@ -49,4 +49,20 @@ public class SamplesHandler {
         Gson gson = new Gson();
         return List.of(gson.fromJson(line, Column[].class));
     }
+    public List<List<Column>> divideSample(List<Column> sample, int desiredSamplesNumber) {
+        int totalSampleSize = sample.size();
+        int lastSampleSize = totalSampleSize % desiredSamplesNumber;
+        if (lastSampleSize == 0) lastSampleSize = totalSampleSize / desiredSamplesNumber;
+        int desiredSampleSize = (totalSampleSize-lastSampleSize) / (desiredSamplesNumber-1);
+        List<List<Column>> dividedSamples= new ArrayList<>();
+        for (int i=0; i<(desiredSamplesNumber-1); i++) {
+            int startIndex = i*desiredSampleSize;
+            int endIndex = (i+1)*desiredSampleSize;
+            dividedSamples.add(sample.subList(startIndex, endIndex));
+        }
+        int startIndex = desiredSampleSize*(desiredSamplesNumber-1);
+        int endIndex = startIndex + lastSampleSize;
+        dividedSamples.add(sample.subList(startIndex, endIndex));
+        return  dividedSamples;
+    }
 }

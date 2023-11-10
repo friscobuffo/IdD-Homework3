@@ -76,7 +76,7 @@ public class IndexHandler implements IndexHandlerInterface {
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
         SamplesHandler samplesHandler = new SamplesHandler();
-        samplesHandler.makeSample(1000);
+        samplesHandler.makeSample(10000);
         int i=0;
         while (columnsReader.hasNextColumn()) {
             i += 1;

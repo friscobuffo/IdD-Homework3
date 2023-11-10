@@ -17,29 +17,45 @@ public class MainExpandColumn {
         TableExpander tableExpander = new TableExpander(indexPath);
         SamplesHandler samplesHandler = new SamplesHandler();
         List<Column> samples = samplesHandler.readSample("samples");
-        for (Column sample : samples) {
-            QueryResults queryResults = tableExpander.searchForColumnExpansion(sample);
-            TableExpansionStatistics.processExpansionStats(queryResults);
+        int i=0;
+        // expanding columns and making stats
+        for (List<Column> sample : samplesHandler.divideSample(samples, 10)) {
+            System.out.println("expanding sample number: "+(++i)+" - size of sample: " + sample.size());
+            int j=0;
+            for (Column column : sample) {
+                System.out.print("\rcolumn number: "+(++j));
+                QueryResults queryResults = tableExpander.searchForColumnExpansion(column);
+                TableExpansionStatistics.processExpansionStats(queryResults);
+                }
+            System.out.println("\nexpanded sample number: "+i);
         }
-        TableExpansionStatistics.finishedExpandingColumns();
+        System.out.println();
         // calculating average similarity between 2 random columns
         long totalComparisons = 0;
         double totalSimilarity = 0.0;
-        for (Column outerSample : samples) {
-            Map<String, Integer> outerSampleTermFrequencies = tableExpander.getParsedTermFrequencies(outerSample);
-            int outerSampleTermCount = outerSampleTermFrequencies.values().stream().reduce(0, Integer::sum);
-            if (outerSampleTermCount==0) continue;
-            for (Column innerSample : samples) {
-                Map<String, Integer> innerSampleTermFrequencies = tableExpander.getParsedTermFrequencies(innerSample);
-                Set<String> innerSampleTermFrequenciesKeySet = innerSampleTermFrequencies.keySet();
-                if (innerSampleTermFrequenciesKeySet.isEmpty()) continue;
-                totalComparisons += 1;
-                double totalIntersections = 0.0;
-                for (String value : innerSampleTermFrequenciesKeySet)
-                    totalIntersections += outerSampleTermFrequencies.getOrDefault(value, 0);
-                totalSimilarity += (totalIntersections / outerSampleTermCount);
+        i=0;
+        for (List<Column> sample : samplesHandler.divideSample(samples, 10)) {
+            System.out.println("calculating average similarity in sample: " + (++i));
+            int j=0;
+            for (Column column : sample) {
+                System.out.print("\rcolumn number: "+(++j));
+                Map<String, Integer> outerSampleTermFrequencies = tableExpander.getParsedTermFrequencies(column);
+                int outerSampleTermCount = outerSampleTermFrequencies.values().stream().reduce(0, Integer::sum);
+                if (outerSampleTermCount==0) continue;
+                for (Column innerSample : sample) {
+                    Map<String, Integer> innerSampleTermFrequencies = tableExpander.getParsedTermFrequencies(innerSample);
+                    Set<String> innerSampleTermFrequenciesKeySet = innerSampleTermFrequencies.keySet();
+                    if (innerSampleTermFrequenciesKeySet.isEmpty()) continue;
+                    totalComparisons += 1;
+                    double totalIntersections = 0.0;
+                    for (String value : innerSampleTermFrequenciesKeySet)
+                        totalIntersections += outerSampleTermFrequencies.getOrDefault(value, 0);
+                    totalSimilarity += (totalIntersections / outerSampleTermCount);
+                }
             }
+            System.out.println();
         }
+        TableExpansionStatistics.finishedExpandingColumns();
         TableExpansionStatistics.setAverageSimilarityRandomColumns(totalSimilarity / totalComparisons);
         TableExpansionStatistics.saveStats("stats");
         TableExpansionStatistics.printStats();
