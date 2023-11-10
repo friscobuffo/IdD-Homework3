@@ -104,10 +104,10 @@ public class IndexHandler implements IndexHandlerInterface {
                 stream.reset();
                 StringBuilder stringBuilder = new StringBuilder();
                 while (stream.incrementToken()) {
-                    String token = stream.getAttribute(CharTermAttribute.class).toString();
-                    if (token.isBlank()) continue;
-                    stringBuilder.append(token);
+                    stringBuilder.append(stream.getAttribute(CharTermAttribute.class).toString());
                 }
+                String token = stringBuilder.toString();
+                if (token.isBlank()) continue;
                 parsedFields.add(stringBuilder.toString());
             }
         }
