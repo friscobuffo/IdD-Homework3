@@ -4,17 +4,14 @@ import ingegneria_dei_dati.index.IndexHandler;
 import ingegneria_dei_dati.index.IndexHandlerInterface;
 import ingegneria_dei_dati.index.QueryResults;
 import ingegneria_dei_dati.table.Column;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 public class TableExpander {
-    private final String FIELD = "text";
+    private static final String FIELD = "text";
     private final IndexHandlerInterface indexHandler;
 
     public TableExpander(String indexPath) throws IOException {
@@ -30,20 +27,18 @@ public class TableExpander {
         return queryResults;
     }
     public Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
-        this.indexHandler.parseColumn(column);
+        Column parsed = this.indexHandler.parseColumn(column);
         Map<String, Integer> termFrequencies = new HashMap<>();
-
-        for(String cell : column.getFields()){
+        for(String cell : parsed.getFields()){
             int frequency = termFrequencies.getOrDefault(cell, 0);
             termFrequencies.put(cell, frequency + 1);
         }
-
         return termFrequencies;
     }
     private BooleanQuery buildQuery(Map<String, Integer> termFrequencies) {
         BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder().setMinimumNumberShouldMatch(1);
         for(String term : termFrequencies.keySet()){
-            Query baseQuery = new TermQuery(new Term(this.FIELD, term));
+            Query baseQuery = new TermQuery(new Term(FIELD, term));
             if(termFrequencies.get(term) > 1){
                 baseQuery = new BoostQuery(baseQuery, termFrequencies.get(term));
             }
