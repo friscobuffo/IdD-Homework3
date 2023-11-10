@@ -27,6 +27,7 @@ public class QueryResults {
     private static final String greenColor = "\u001B[32m";
     private static final String resetColor = "\u001B[0m";
     private static final String reset = "\u001B[0m";
+    @SuppressWarnings(value = "unused")
     private static final String redColor = "\u001B[31m";
     private static final String blueColor = "\u001B[34m";
     private static final String orangeColor = "\u001B[33m";

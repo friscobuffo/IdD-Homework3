@@ -92,6 +92,7 @@ public class IndexHandler implements IndexHandlerInterface {
         System.out.println("\nfinished indexing columns\n");
     }
     @Override
+    @SuppressWarnings(value = "deprecation")
     public QueryResults search(Query query, int maxHits) throws IOException {
         try (IndexReader reader = DirectoryReader.open(this.directory)){
             IndexSearcher searcher = new IndexSearcher(reader);

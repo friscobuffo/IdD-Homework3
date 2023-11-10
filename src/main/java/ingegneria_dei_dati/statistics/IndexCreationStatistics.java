@@ -120,13 +120,14 @@ public class IndexCreationStatistics {
                     "totalIndexCreationTime," + totalTime + "\n" +
                     "totalCells," + totalCells + "\n" +
                     "totalTokens," + totalTokens + "\n" +
-                    "totalPercentageRepeatedValuesInColumns" + totalPercentageRepeatedValuesInColumns + "\n" +
+                    "totalPercentageRepeatedValuesInColumns," + totalPercentageRepeatedValuesInColumns + "\n" +
                     "totalDistinctValuesInColumns," + totalDistinctValuesInColumns + "\n";
             myWriter.write(line);
             myWriter.close();
         }
         catch (IOException ignored) { }
     }
+    @SuppressWarnings(value = "deprecation")
     public static void saveStatsMakeHistograms(String folderPath) {
         IndexCreationStatistics.saveStats(folderPath);
         String path = System.getProperty("user.dir") + "/createHistograms.py";
