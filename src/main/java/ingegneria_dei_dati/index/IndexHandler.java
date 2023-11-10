@@ -14,6 +14,7 @@ import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilterFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.codecs.simpletext.SimpleTextCodec;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -84,9 +85,9 @@ public class IndexHandler implements IndexHandlerInterface {
         while (columnsReader.hasNextColumn()) {
             i += 1;
             Column column = columnsReader.readNextColumn();
+            Column parsed = parseColumn(column);
             samplesHandler.addToSampleProbabilistic(column);
-            this.parseColumn(column);
-            this.add2Index(column, writer);
+            this.add2Index(parsed, writer);
             this.prints(i, column.getTableName());
         }
         writer.commit();
@@ -95,25 +96,27 @@ public class IndexHandler implements IndexHandlerInterface {
         samplesHandler.saveSample("samples");
         System.out.println("\nfinished indexing columns\n");
     }
-
     @Override
-    public void parseColumn(Column column) throws IOException {
+    public Column parseColumn(Column column) throws IOException {
         List<String> parsedFields = new ArrayList<>();
-
         for(String cell : column.getFields()){
             try(TokenStream stream = this.getAnalyzer().tokenStream("text", cell)) {
                 stream.reset();
                 StringBuilder stringBuilder = new StringBuilder();
                 while (stream.incrementToken()) {
-                    stringBuilder.append(stream.getAttribute(CharTermAttribute.class).toString());
+                    String token = stream.getAttribute(CharTermAttribute.class).toString();
+                    if (token.isBlank()) continue;
+                    stringBuilder.append(token);
                 }
                 parsedFields.add(stringBuilder.toString());
             }
         }
-
-        column.setFields(parsedFields);
+        Column output = new Column();
+        output.setTableName(column.getTableName());
+        output.setColumnName(column.getColumnName());
+        output.setFields(parsedFields);
+        return output;
     }
-
     @Override
     @SuppressWarnings(value = "deprecation")
     public QueryResults search(Query query, int maxHits) throws IOException {
@@ -144,18 +147,16 @@ public class IndexHandler implements IndexHandlerInterface {
         System.out.print("indexed columns: "+indexedColumns);
     }
     public void createIndex(List<Column> columns) throws IOException {
-        IndexWriterConfig config = new IndexWriterConfig(this.analyzer);
+        IndexWriterConfig config = new IndexWriterConfig();
+        config.setCodec(new SimpleTextCodec());
         IndexWriter writer = new IndexWriter(directory, config);
         writer.deleteAll();
         for (Column column : columns) {
-            this.add2Index(column, writer);
+            Column parsed = parseColumn(column);
+            this.add2Index(parsed, writer);
         }
         writer.commit();
         writer.close();
         System.out.println("\nfinished indexing columns\n");
     }
-
-
-
-
 }

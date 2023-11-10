@@ -64,7 +64,6 @@ public class TestColumnExpander {
         assertEquals(bestResult.tableName, "bibite cocacola");
         assertEquals(bestResult.columnName, "marche");
         assertEquals(0.66, bestResult.queryScore, 0.01);
-        System.out.println(bestResult.columnName + " " + bestResult.tableName + " ");
     }
     @Test
     public void testSample() throws IOException {

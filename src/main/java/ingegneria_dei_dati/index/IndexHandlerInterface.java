@@ -11,5 +11,5 @@ public interface IndexHandlerInterface {
     void createIndex(String datasetPath, ColumnsReader documentsHandler) throws IOException;
     QueryResults search(Query query, int maxHits) throws IOException;
     Analyzer getAnalyzer();
-    public void parseColumn(Column column) throws IOException;
+    Column parseColumn(Column column) throws IOException;
 }
