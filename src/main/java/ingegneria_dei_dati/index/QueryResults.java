@@ -47,7 +47,7 @@ public class QueryResults {
         result.queryScore = queryScore;
         results.add(result);
     }
-    public void normalize(int columnLen){
+    public void normalize(int columnLen) {
         for(Result result : this.results)
             result.normalize(columnLen);
     }
@@ -56,6 +56,9 @@ public class QueryResults {
     }
     public void setQueryColumn(Column queryColumn) {
         this.queryColumn = queryColumn;
+    }
+    public Column getQueryColumn() {
+        return this.queryColumn;
     }
     public Result getBestResult() {
         for (Result result : this.results)

@@ -23,7 +23,7 @@ public class TableExpander {
         QueryResults queryResults = this.indexHandler.search(booleanQuery, 10);
         int termCount = termFrequencies.values().stream().reduce(0, Integer::sum);
         queryResults.normalize(termCount);
-        queryResults.setQueryColumn(column);
+        queryResults.setQueryColumn(this.indexHandler.parseColumn(column));
         return queryResults;
     }
     public QueryResults mergeList(Column column) throws IOException {
@@ -61,15 +61,15 @@ public class TableExpander {
             }
         }
         QueryResults queryResults = new QueryResults(set2count.size());
-        if (secondBestScore > 0) {
-            String[] separated = secondBestTableColumnId.split(separator);
-            queryResults.addResult(separated[0], separated[1], secondBestScore);
-        }
         if (bestScore > 0) {
             String[] separated = bestTableColumnId.split(separator);
             queryResults.addResult(separated[0], separated[1], bestScore);
         }
-        queryResults.setQueryColumn(column);
+        if (secondBestScore > 0) {
+            String[] separated = secondBestTableColumnId.split(separator);
+            queryResults.addResult(separated[0], separated[1], secondBestScore);
+        }
+        queryResults.setQueryColumn(parsedColumn);
         return queryResults;
     }
     public Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {

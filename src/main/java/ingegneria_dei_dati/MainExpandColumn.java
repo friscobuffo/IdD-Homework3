@@ -24,8 +24,10 @@ public class MainExpandColumn {
             int j=0;
             for (Column column : sample) {
                 System.out.print("\rcolumn number: "+(++j));
+                long startTime = System.currentTimeMillis();
                 QueryResults queryResults = tableExpander.searchForColumnExpansion(column);
-                TableExpansionStatistics.processExpansionStats(queryResults);
+                int queryTime = (int)(System.currentTimeMillis() - startTime);
+                TableExpansionStatistics.processExpansionStats(queryResults, queryTime);
             }
             System.out.println("\nexpanded sample number: "+i);
         }

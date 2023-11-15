@@ -96,7 +96,7 @@ public class IndexCreationStatistics {
         saveMapStats(percentageRepeatedValues2columnsQuantity, "percentageRepeatedValues2columnsQuantity", folderPath);
         saveMapStats(tokensNumber2cellsQuantity, "tokensNumber2cellsQuantity", folderPath);
     }
-    private static <A,B> void saveMapStats(Map<A, B> map, String mapName, String folderPath) {
+    protected static <A,B> void saveMapStats(Map<A, B> map, String mapName, String folderPath) {
         try {
             Files.createDirectories(Paths.get(folderPath));
             FileWriter myWriter = new FileWriter(folderPath+mapName+".csv");

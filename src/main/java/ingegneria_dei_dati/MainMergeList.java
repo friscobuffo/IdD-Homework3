@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class MainMergeList {
-
     public static void main(String[] args) throws IOException {
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
@@ -22,8 +21,10 @@ public class MainMergeList {
         // expanding columns and making stats
         for (Column column : sample) {
             System.out.print("\rcolumn number: "+(++i));
+            long startTime = System.currentTimeMillis();
             QueryResults queryResults = tableExpander.mergeList(column);
-            TableExpansionStatistics.processExpansionStats(queryResults);
+            int queryTime = (int)(System.currentTimeMillis() - startTime);
+            TableExpansionStatistics.processExpansionStats(queryResults, queryTime);
         }
         System.out.println();
         TableExpansionStatistics.finishedExpandingColumns();
