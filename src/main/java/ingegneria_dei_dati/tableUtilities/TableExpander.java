@@ -9,7 +9,6 @@ import org.apache.lucene.search.*;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TableExpander {
     private static final String FIELD = "text";
@@ -27,29 +26,30 @@ public class TableExpander {
         queryResults.setQueryColumn(column);
         return queryResults;
     }
-
     public QueryResults mergeList(Column column) throws IOException {
         String separator = "@--------@";
         Column parsedColumn = this.indexHandler.parseColumn(column);
-        System.out.println("parsed column");
-        System.out.println(parsedColumn);
-        Map<String, Float> set2count = new HashMap<>();
+        Map<String, Integer> set2count = new HashMap<>();
         for(String term : parsedColumn.getFields()){
             Query baseQuery = new TermQuery(new Term(FIELD, term));
             QueryResults queryResults = this.indexHandler.search(baseQuery, (int)Double.POSITIVE_INFINITY);
-            for(QueryResults.Result result : queryResults.getResults()){
+            Map<String, Integer> localSet2Count = new HashMap<>();
+            for(QueryResults.Result result : queryResults.getResults()) {
                 String tableColumnId = result.getTableName() + separator + result.getColumnName();
-                float count = set2count.getOrDefault(tableColumnId, 0f);
-                set2count.put(tableColumnId, count + 1f);
+                localSet2Count.put(tableColumnId, 1);
+            }
+            for (String key : localSet2Count.keySet()) {
+                int count = set2count.getOrDefault(key, 0);
+                set2count.put(key, count + 1);
             }
         }
-        int termCount = column.getFields().size();
+        int termCount = parsedColumn.getFields().size();
         float bestScore = 0;
         String bestTableColumnId = "";
         float secondBestScore = 0;
         String secondBestTableColumnId = "";
         for (String key : set2count.keySet()) {
-            float value = set2count.get(key) / termCount;
+            float value = set2count.get(key) / (float)termCount;
             if (value > bestScore) {
                 secondBestScore = bestScore;
                 secondBestTableColumnId = bestTableColumnId;
@@ -61,13 +61,14 @@ public class TableExpander {
             }
         }
         QueryResults queryResults = new QueryResults(set2count.size());
-        System.out.println();
-        System.out.println(bestTableColumnId + " " + bestScore);
-        System.out.println(secondBestTableColumnId + " " + secondBestScore);
-        String[] separated = bestTableColumnId.split(separator);
-        queryResults.addResult(separated[0], separated[1], bestScore);
-        separated = secondBestTableColumnId.split(separator);
-        queryResults.addResult(separated[0], separated[1], secondBestScore);
+        if (bestScore > 0) {
+            String[] separated = bestTableColumnId.split(separator);
+            queryResults.addResult(separated[0], separated[1], bestScore);
+            if (secondBestScore > 0) {
+                separated = secondBestTableColumnId.split(separator);
+                queryResults.addResult(separated[0], separated[1], secondBestScore);
+            }
+        }
         queryResults.setQueryColumn(column);
         return queryResults;
     }

@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TableExpansionStatistics {
     public static long startTimeMilliseconds;
@@ -20,6 +22,9 @@ public class TableExpansionStatistics {
     public static double variance;
     public static double standardDeviation;
     public static double averageSimilarityRandomColumns;
+    public static int counterNotFoundSelf;
+    public static Map<Integer, Double> columnSize2totalTime = new HashMap<>();
+    public static Map<Integer, Integer> columnSize2TotalQueriesNumber = new HashMap<>();
 
     public static void processExpansionStats(QueryResults queryResults) {
         if (queriesNumber==0) startTimeMilliseconds = System.currentTimeMillis();
@@ -29,12 +34,14 @@ public class TableExpansionStatistics {
             if (bestResult != null) {
                 goodScores.add(bestResult.queryScore);
                 totalGoodScores += bestResult.queryScore;
+                if (bestResult.queryScore != 1)
+                    counterNotFoundSelf += 1;
             }
         }
     }
     public static void finishedExpandingColumns() {
         totalTime = (System.currentTimeMillis() - startTimeMilliseconds) / 1000.0;
-        averageQueryTime = totalTime / goodScores.size();
+        averageQueryTime = totalTime / queriesNumber;
         averageGoodScore = totalGoodScores / goodScores.size();
         variance = 0;
         for (float score : goodScores)
@@ -55,6 +62,7 @@ public class TableExpansionStatistics {
             line += "variance," + variance + "\n";
             line += "standardDeviation," + standardDeviation + "\n";
             line += "averageSimilarityRandomColumns," + averageSimilarityRandomColumns + "\n";
+            line += "counterNotFoundSelf," + counterNotFoundSelf + "\n";
             myWriter.write(line);
             myWriter.close();
         }
@@ -70,6 +78,7 @@ public class TableExpansionStatistics {
         System.out.println("variance -> " + variance);
         System.out.println("standardDeviation -> " + standardDeviation);
         System.out.println("averageSimilarityRandomColumns -> " + averageSimilarityRandomColumns);
+        System.out.println("counterNotFoundSelf -> " + counterNotFoundSelf);
     }
     public static void setAverageSimilarityRandomColumns(double averageSimilarityRandomColumns) {
         TableExpansionStatistics.averageSimilarityRandomColumns = averageSimilarityRandomColumns;

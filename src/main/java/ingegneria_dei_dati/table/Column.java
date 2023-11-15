@@ -13,7 +13,7 @@ public class Column {
         StringBuilder output = new StringBuilder();
         if (this.tableName != null) output.append("table: ").append(this.tableName).append("\n");
         if (this.columnName != null) output.append("column: ").append(this.columnName).append("\n");
-        if (this.fields != null) output.append("fields: ").append(this.fields).append("\n");
+        if (this.fields != null) output.append("fields: ").append(this.fields);
         return output.toString();
     }
     public String getTableName() {
@@ -25,6 +25,8 @@ public class Column {
     }
     public String getColumnName() {
         if (columnName==null)
+            return String.valueOf(Column.idForNullHeader++);
+        else if (columnName.isBlank())
             return String.valueOf(Column.idForNullHeader++);
         return columnName;
     }
