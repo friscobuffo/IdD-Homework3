@@ -34,7 +34,7 @@ public class TableExpansionStatistics {
             if (bestResult != null) {
                 goodScores.add(bestResult.queryScore);
                 totalGoodScores += bestResult.queryScore;
-                if (bestResult.queryScore != 1)
+                if (bestResult.queryScore != 1.0)
                     counterNotFoundSelf += 1;
             }
         }

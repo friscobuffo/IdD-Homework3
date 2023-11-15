@@ -33,14 +33,14 @@ public class TableExpander {
         for(String term : parsedColumn.getFields()){
             Query baseQuery = new TermQuery(new Term(FIELD, term));
             QueryResults queryResults = this.indexHandler.search(baseQuery, (int)Double.POSITIVE_INFINITY);
-            Map<String, Integer> localSet2Count = new HashMap<>();
+            Set<String> allTableColumnIds = new HashSet<>();
             for(QueryResults.Result result : queryResults.getResults()) {
                 String tableColumnId = result.getTableName() + separator + result.getColumnName();
-                localSet2Count.put(tableColumnId, 1);
+                allTableColumnIds.add(tableColumnId);
             }
-            for (String key : localSet2Count.keySet()) {
-                int count = set2count.getOrDefault(key, 0);
-                set2count.put(key, count + 1);
+            for (String tableColumnId : allTableColumnIds) {
+                int count = set2count.getOrDefault(tableColumnId, 0);
+                set2count.put(tableColumnId, count + 1);
             }
         }
         int termCount = parsedColumn.getFields().size();
@@ -61,13 +61,13 @@ public class TableExpander {
             }
         }
         QueryResults queryResults = new QueryResults(set2count.size());
+        if (secondBestScore > 0) {
+            String[] separated = secondBestTableColumnId.split(separator);
+            queryResults.addResult(separated[0], separated[1], secondBestScore);
+        }
         if (bestScore > 0) {
             String[] separated = bestTableColumnId.split(separator);
             queryResults.addResult(separated[0], separated[1], bestScore);
-            if (secondBestScore > 0) {
-                separated = secondBestTableColumnId.split(separator);
-                queryResults.addResult(separated[0], separated[1], secondBestScore);
-            }
         }
         queryResults.setQueryColumn(column);
         return queryResults;
