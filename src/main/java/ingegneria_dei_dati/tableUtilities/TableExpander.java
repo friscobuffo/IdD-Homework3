@@ -28,27 +28,48 @@ public class TableExpander {
         return queryResults;
     }
 
-    public Map<String, Float> mergeList(Column column) throws IOException {
+    public QueryResults mergeList(Column column) throws IOException {
+        String separator = "@--------@";
         Column parsedColumn = this.indexHandler.parseColumn(column);
+        System.out.println("parsed column");
+        System.out.println(parsedColumn);
         Map<String, Float> set2count = new HashMap<>();
         for(String term : parsedColumn.getFields()){
             Query baseQuery = new TermQuery(new Term(FIELD, term));
             QueryResults queryResults = this.indexHandler.search(baseQuery, (int)Double.POSITIVE_INFINITY);
             for(QueryResults.Result result : queryResults.getResults()){
-                String tableColumnId = result.getTableName() + "@-----@" + result.getColumnName();
+                String tableColumnId = result.getTableName() + separator + result.getColumnName();
                 float count = set2count.getOrDefault(tableColumnId, 0f);
-                if(count != 0) System.out.println("match");
                 set2count.put(tableColumnId, count + 1f);
             }
-
         }
-
         int termCount = column.getFields().size();
-        set2count.replaceAll((key, value) -> value/termCount);
-
-        System.out.println(termCount + " " + Collections.max(set2count.values()));
-
-        return set2count;
+        float bestScore = 0;
+        String bestTableColumnId = "";
+        float secondBestScore = 0;
+        String secondBestTableColumnId = "";
+        for (String key : set2count.keySet()) {
+            float value = set2count.get(key) / termCount;
+            if (value > bestScore) {
+                secondBestScore = bestScore;
+                secondBestTableColumnId = bestTableColumnId;
+                bestScore = value;
+                bestTableColumnId = key;
+            } else if (value > secondBestScore) {
+                secondBestScore = value;
+                secondBestTableColumnId = key;
+            }
+        }
+        QueryResults queryResults = new QueryResults(set2count.size());
+        System.out.println();
+        System.out.println(bestTableColumnId + " " + bestScore);
+        System.out.println(secondBestTableColumnId + " " + secondBestScore);
+        String[] separated = bestTableColumnId.split(separator);
+        queryResults.addResult(separated[0], separated[1], bestScore);
+        separated = secondBestTableColumnId.split(separator);
+        queryResults.addResult(separated[0], separated[1], secondBestScore);
+        queryResults.setQueryColumn(column);
+        return queryResults;
     }
     public Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
         Column parsedColumn = this.indexHandler.parseColumn(column);

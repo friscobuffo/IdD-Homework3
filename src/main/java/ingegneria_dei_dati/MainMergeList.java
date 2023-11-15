@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MainExpandColumn {
+public class MainMergeList {
+
     public static void main(String[] args) throws IOException {
         String indexPath = "index";
         TableExpander tableExpander = new TableExpander(indexPath);
@@ -19,22 +20,23 @@ public class MainExpandColumn {
         List<Column> samples = samplesHandler.readSample("samples");
         int i=0;
         // expanding columns and making stats
-        for (List<Column> sample : samplesHandler.divideSample(samples, 10)) {
+        for (List<Column> sample : samplesHandler.divideSample(samples, 100)) {
             System.out.println("expanding sample number: "+(++i)+" - size of sample: " + sample.size());
             int j=0;
             for (Column column : sample) {
                 System.out.print("\rcolumn number: "+(++j));
-                QueryResults queryResults = tableExpander.searchForColumnExpansion(column);
+                QueryResults queryResults = tableExpander.mergeList(column);
                 TableExpansionStatistics.processExpansionStats(queryResults);
             }
             System.out.println("\nexpanded sample number: "+i);
+            break;
         }
         System.out.println();
         // calculating average similarity between 2 random columns
         long totalComparisons = 0;
         double totalSimilarity = 0.0;
         i=0;
-        for (List<Column> sample : samplesHandler.divideSample(samples, 10)) {
+        for (List<Column> sample : samplesHandler.divideSample(samples, 100)) {
             System.out.println("calculating average similarity in sample: " + (++i));
             int j=0;
             for (Column column : sample) {
@@ -54,10 +56,12 @@ public class MainExpandColumn {
                 }
             }
             System.out.println();
+            break;
         }
         TableExpansionStatistics.finishedExpandingColumns();
         TableExpansionStatistics.setAverageSimilarityRandomColumns(totalSimilarity / totalComparisons);
-        TableExpansionStatistics.saveStats("stats/expand-column");
+        TableExpansionStatistics.saveStats("stats/merge-list");
         TableExpansionStatistics.printStats();
     }
+
 }
