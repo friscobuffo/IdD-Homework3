@@ -32,7 +32,6 @@ plt.plot(x, y)
 plt.savefig(graphsFolderAbsolutePath + "expandColumn-columnSize2averageQueryTimeSeconds.jpg")
 plt.clf()
 
-
 statsFolderAbsolutePath = folderAbsolutePath + "stats/merge-list/"
 columnSize2averageQueryTimeSeconds = openDict(statsFolderAbsolutePath + 'columnSize2averageQueryTimeSeconds.csv')
 x = []
@@ -46,4 +45,29 @@ plt.plot(x, y)
 plt.savefig(graphsFolderAbsolutePath + "mergeList-columnSize2averageQueryTimeSeconds.jpg")
 plt.clf()
 
+statsFolderAbsolutePath = folderAbsolutePath + "stats/expand-column/"
+columnSize2averageQueryTimeSeconds = openDict(statsFolderAbsolutePath + 'columnSize2averageQueryTimeSeconds.csv')
+x = []
+y = []
+for columnSize in columnSize2averageQueryTimeSeconds:
+	if (columnSize<30 and columnSize2averageQueryTimeSeconds[columnSize]<0.08): x.append(columnSize)
+x = sorted(x)
+for columnSize in x:
+	y.append(columnSize2averageQueryTimeSeconds[columnSize])
+plt.plot(x, y)
+plt.savefig(graphsFolderAbsolutePath + "expandColumnZoom-columnSize2averageQueryTimeSeconds.jpg")
+plt.clf()
+
+statsFolderAbsolutePath = folderAbsolutePath + "stats/merge-list/"
+columnSize2averageQueryTimeSeconds = openDict(statsFolderAbsolutePath + 'columnSize2averageQueryTimeSeconds.csv')
+x = []
+y = []
+for columnSize in columnSize2averageQueryTimeSeconds:
+	if (columnSize<30): x.append(columnSize)
+x = sorted(x)
+for columnSize in x:
+	y.append(columnSize2averageQueryTimeSeconds[columnSize])
+plt.plot(x, y)
+plt.savefig(graphsFolderAbsolutePath + "mergeListZoom-columnSize2averageQueryTimeSeconds.jpg")
+plt.clf()
 plt.close()
