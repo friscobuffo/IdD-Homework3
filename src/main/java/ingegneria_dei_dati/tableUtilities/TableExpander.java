@@ -37,13 +37,14 @@ public class TableExpander {
             for(QueryResults.Result result : queryResults.getResults()){
                 String tableColumnId = result.getTableName() + "@-----@" + result.getColumnName();
                 float count = set2count.getOrDefault(tableColumnId, 0f);
-                set2count.put(result.getColumnName(), count + 1f);
+                if(count != 0) System.out.println("match");
+                set2count.put(tableColumnId, count + 1f);
             }
 
         }
 
         int termCount = column.getFields().size();
-        //set2count.replaceAll((key, value) -> termCount/value);
+        set2count.replaceAll((key, value) -> value/termCount);
 
         System.out.println(termCount + " " + Collections.max(set2count.values()));
 
