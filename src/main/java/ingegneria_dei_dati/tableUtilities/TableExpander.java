@@ -34,9 +34,9 @@ public class TableExpander {
         for(String term : parsedColumn.getFields()){
             Query baseQuery = new TermQuery(new Term(FIELD, term));
             QueryResults queryResults = this.indexHandler.search(baseQuery, (int)Double.POSITIVE_INFINITY);
-
             for(QueryResults.Result result : queryResults.getResults()){
-                float count = set2count.getOrDefault(result.getColumnName(), 0f);
+                String tableColumnId = result.getTableName() + "@-----@" + result.getColumnName();
+                float count = set2count.getOrDefault(tableColumnId, 0f);
                 set2count.put(result.getColumnName(), count + 1f);
             }
 

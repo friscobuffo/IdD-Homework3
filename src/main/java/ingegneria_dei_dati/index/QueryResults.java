@@ -14,6 +14,9 @@ public class QueryResults {
             this.queryScore /= columnLen;
         }
         public String getColumnName(){ return this.columnName; }
+        public String getTableName() {
+            return this.tableName;
+        }
         @Override
         public String toString() {
             return "- " + orangeColor + "TableId: " + resetColor + tableName +
