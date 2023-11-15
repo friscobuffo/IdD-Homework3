@@ -13,6 +13,7 @@ public class QueryResults {
         private void normalize(int columnLen) {
             this.queryScore /= columnLen;
         }
+        public String getColumnName(){ return this.columnName; }
         @Override
         public String toString() {
             return "- " + orangeColor + "TableId: " + resetColor + tableName +

@@ -9,6 +9,7 @@ import org.apache.lucene.search.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TableExpander {
     private static final String FIELD = "text";
@@ -26,10 +27,32 @@ public class TableExpander {
         queryResults.setQueryColumn(column);
         return queryResults;
     }
+
+    public Map<String, Float> mergeList(Column column) throws IOException {
+        Column parsedColumn = this.indexHandler.parseColumn(column);
+        Map<String, Float> set2count = new HashMap<>();
+        for(String term : parsedColumn.getFields()){
+            Query baseQuery = new TermQuery(new Term(FIELD, term));
+            QueryResults queryResults = this.indexHandler.search(baseQuery, (int)Double.POSITIVE_INFINITY);
+
+            for(QueryResults.Result result : queryResults.getResults()){
+                float count = set2count.getOrDefault(result.getColumnName(), 0f);
+                set2count.put(result.getColumnName(), count + 1f);
+            }
+
+        }
+
+        int termCount = column.getFields().size();
+        //set2count.replaceAll((key, value) -> termCount/value);
+
+        System.out.println(termCount + " " + Collections.max(set2count.values()));
+
+        return set2count;
+    }
     public Map<String, Integer> getParsedTermFrequencies(Column column) throws IOException {
-        Column parsed = this.indexHandler.parseColumn(column);
+        Column parsedColumn = this.indexHandler.parseColumn(column);
         Map<String, Integer> termFrequencies = new HashMap<>();
-        for(String cell : parsed.getFields()){
+        for(String cell : parsedColumn.getFields()){
             int frequency = termFrequencies.getOrDefault(cell, 0);
             termFrequencies.put(cell, frequency + 1);
         }
